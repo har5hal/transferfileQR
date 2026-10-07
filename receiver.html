@@ -56,7 +56,9 @@ h1 {
 }
 
 
-/* CAMERA */
+/* =====================================================
+   CAMERA
+===================================================== */
 
 .camera {
     position: relative;
@@ -82,12 +84,13 @@ h1 {
 }
 
 
-/* SCAN GUIDE */
+/* QR SCAN GUIDE */
 
 .scan-box {
     position: absolute;
 
     width: min(70%, 430px);
+
     aspect-ratio: 1;
 
     left: 50%;
@@ -104,14 +107,17 @@ h1 {
 
     box-shadow:
         0 0 0 9999px
-        rgba(0,0,0,.20);
+        rgba(0, 0, 0, .20);
 }
 
 
-/* CONTROLS */
+/* =====================================================
+   BUTTONS
+===================================================== */
 
 .controls {
     text-align: center;
+
     margin: 12px 0;
 }
 
@@ -125,6 +131,7 @@ button {
     margin: 4px;
 
     font-size: 15px;
+
     font-weight: 700;
 
     color: white;
@@ -138,12 +145,26 @@ button.stop {
     background: #dc2626;
 }
 
+button.download {
+    background: #16a34a;
+
+    width: calc(100% - 8px);
+
+    margin-top: 10px;
+
+    font-size: 17px;
+}
+
 button:disabled {
-    opacity: .45;
+    opacity: .4;
+
+    cursor: not-allowed;
 }
 
 
-/* STATUS */
+/* =====================================================
+   STATUS
+===================================================== */
 
 .status {
     margin-top: 10px;
@@ -170,10 +191,12 @@ button:disabled {
 }
 
 
-/* PROGRESS */
+/* =====================================================
+   PROGRESS
+===================================================== */
 
 .progress {
-    height: 22px;
+    height: 24px;
 
     margin-top: 14px;
 
@@ -200,7 +223,9 @@ button:disabled {
 }
 
 
-/* INFO */
+/* =====================================================
+   INFORMATION BOXES
+===================================================== */
 
 .info {
     display: grid;
@@ -241,6 +266,7 @@ button:disabled {
     color: #94a3b8;
 }
 
+
 @media(max-width:600px) {
 
     .info {
@@ -254,10 +280,23 @@ button:disabled {
 
 </style>
 
-<!-- jsQR.js must be in the same directory -->
+
+<!--
+=========================================================
+IMPORTANT
+
+Put jsQR.js in the SAME directory:
+
+receiver.html
+jsQR.js
+
+=========================================================
+-->
+
 <script src="./jsQR.js"></script>
 
 </head>
+
 
 <body>
 
@@ -265,14 +304,19 @@ button:disabled {
 
 <div class="card">
 
-<h1>📥 QR File Receiver</h1>
+
+<h1>
+📥 QR File Receiver
+</h1>
 
 <div class="subtitle">
 Point the rear camera at the sender screen
 </div>
 
 
-<!-- CAMERA -->
+<!-- =================================================
+     CAMERA
+================================================== -->
 
 <div class="camera">
 
@@ -288,7 +332,9 @@ Point the rear camera at the sender screen
 </div>
 
 
-<!-- CONTROLS -->
+<!-- =================================================
+     CAMERA CONTROLS
+================================================== -->
 
 <div class="controls">
 
@@ -306,14 +352,22 @@ Stop
 </div>
 
 
-<!-- STATUS -->
+<!-- =================================================
+     STATUS
+================================================== -->
 
-<div id="status" class="status">
+<div
+    id="status"
+    class="status">
+
 Ready.
+
 </div>
 
 
-<!-- PROGRESS -->
+<!-- =================================================
+     PROGRESS BAR
+================================================== -->
 
 <div class="progress">
 
@@ -322,13 +376,18 @@ Ready.
 </div>
 
 
-<!-- FILE INFO -->
+<!-- =================================================
+     FILE INFORMATION
+================================================== -->
 
 <div class="info">
 
+
 <div class="box">
 
-<span id="fileName" class="value">
+<span
+    id="fileName"
+    class="value">
 —
 </span>
 
@@ -341,7 +400,9 @@ File
 
 <div class="box">
 
-<span id="received" class="value">
+<span
+    id="received"
+    class="value">
 0
 </span>
 
@@ -354,7 +415,9 @@ Received
 
 <div class="box">
 
-<span id="total" class="value">
+<span
+    id="total"
+    class="value">
 —
 </span>
 
@@ -364,14 +427,18 @@ Total
 
 </div>
 
+
 </div>
 
 
 <div class="info">
 
+
 <div class="box">
 
-<span id="fileSize" class="value">
+<span
+    id="fileSize"
+    class="value">
 —
 </span>
 
@@ -384,7 +451,9 @@ Size
 
 <div class="box">
 
-<span id="missing" class="value">
+<span
+    id="missing"
+    class="value">
 —
 </span>
 
@@ -397,7 +466,9 @@ Missing
 
 <div class="box">
 
-<span id="percent" class="value">
+<span
+    id="percent"
+    class="value">
 0%
 </span>
 
@@ -407,7 +478,27 @@ Progress
 
 </div>
 
+
 </div>
+
+
+<!-- =================================================
+     DOWNLOAD BUTTON
+================================================== -->
+
+<div class="controls">
+
+<button
+    id="downloadButton"
+    class="download"
+    disabled>
+
+⬇ Download File
+
+</button>
+
+</div>
+
 
 </div>
 
@@ -425,9 +516,35 @@ PACKET FORMAT:
 
 QRF1|frame|totalFrames|filename|fileSize|base64Data
 
-The receiver scans the QR frames, stores them,
-reassembles the original bytes, and downloads
-the resulting file.
+Example:
+
+QRF1|17|500|example.zip|25000000|UEsDB...
+
+IMPORTANT:
+
+The sender can transmit packets repeatedly.
+
+Example:
+
+1 → 2 → 3 → ... → 500
+1 → 2 → 3 → ... → 500
+1 → 2 → 3 → ... → 500
+
+The receiver stores each unique frame.
+
+If frame 17 was missed during cycle 1,
+it can be received during cycle 2 or 3.
+
+Duplicates are ignored.
+
+When ALL frames are received,
+the receiver prepares the file.
+
+The file is NOT automatically downloaded.
+
+The user presses:
+
+Download File
 =========================================================
 */
 
@@ -437,37 +554,64 @@ the resulting file.
 ===================================================== */
 
 const video =
-    document.getElementById("video");
+    document.getElementById(
+        "video"
+    );
 
 const startButton =
-    document.getElementById("startButton");
+    document.getElementById(
+        "startButton"
+    );
 
 const stopButton =
-    document.getElementById("stopButton");
+    document.getElementById(
+        "stopButton"
+    );
+
+const downloadButton =
+    document.getElementById(
+        "downloadButton"
+    );
 
 const statusElement =
-    document.getElementById("status");
+    document.getElementById(
+        "status"
+    );
 
 const progressBar =
-    document.getElementById("progressBar");
+    document.getElementById(
+        "progressBar"
+    );
 
 const fileNameElement =
-    document.getElementById("fileName");
+    document.getElementById(
+        "fileName"
+    );
 
 const receivedElement =
-    document.getElementById("received");
+    document.getElementById(
+        "received"
+    );
 
 const totalElement =
-    document.getElementById("total");
+    document.getElementById(
+        "total"
+    );
 
 const fileSizeElement =
-    document.getElementById("fileSize");
+    document.getElementById(
+        "fileSize"
+    );
 
 const missingElement =
-    document.getElementById("missing");
+    document.getElementById(
+        "missing"
+    );
 
 const percentElement =
-    document.getElementById("percent");
+    document.getElementById(
+        "percent"
+    );
 
 
 /* =====================================================
@@ -486,7 +630,9 @@ let animationFrame = null;
 ===================================================== */
 
 const canvas =
-    document.createElement("canvas");
+    document.createElement(
+        "canvas"
+    );
 
 const ctx =
     canvas.getContext(
@@ -501,9 +647,48 @@ const ctx =
    TRANSFER STATE
 ===================================================== */
 
+
+/*
+transfer contains:
+
+filename
+fileSize
+totalFrames
+*/
+
 let transfer = null;
 
-const frames = new Map();
+
+/*
+Map:
+
+frame number
+     ↓
+Uint8Array
+*/
+
+const frames =
+    new Map();
+
+
+/*
+Once complete:
+
+completedFileBlob
+completedFileName
+*/
+
+let completedFileBlob = null;
+
+let completedFileName = null;
+
+
+/*
+Last decoded QR.
+
+Used to avoid processing
+the same QR continuously.
+*/
 
 let lastQR = "";
 
@@ -536,12 +721,14 @@ async function startCamera() {
 
 
     if (
-        typeof jsQR === "undefined"
+        typeof jsQR ===
+        "undefined"
     ) {
 
         showError(
-            "jsQR.js was not loaded.\n" +
-            "Make sure jsQR.js is beside receiver.html."
+            "jsQR.js was not loaded.\n\n" +
+            "Make sure jsQR.js is beside " +
+            "receiver.html."
         );
 
         return;
@@ -556,12 +743,11 @@ async function startCamera() {
 
 
         /*
-         * Prefer the rear/environment camera.
+         * Prefer rear/environment camera.
          *
-         * "ideal" is intentional:
-         * it asks Chrome to prefer the rear
-         * camera without making the request
-         * fail if the device cannot satisfy it.
+         * "ideal" is used rather than an
+         * exact constraint so that Chrome
+         * can fall back if necessary.
          *
          * No resolution constraints are used.
          */
@@ -584,7 +770,7 @@ async function startCamera() {
 
 
         /*
-         * Attach camera stream.
+         * Attach stream.
          */
 
         video.srcObject =
@@ -592,14 +778,14 @@ async function startCamera() {
 
 
         /*
-         * Wait for video to start.
+         * Start video.
          */
 
         await video.play();
 
 
         /*
-         * Check which camera Chrome selected.
+         * Get actual camera information.
          */
 
         const track =
@@ -608,11 +794,16 @@ async function startCamera() {
         const settings =
             track.getSettings();
 
+
         console.log(
             "Selected camera:",
             settings
         );
 
+
+        /*
+         * Begin scanning.
+         */
 
         scanning = true;
 
@@ -625,14 +816,10 @@ async function startCamera() {
 
 
         setStatus(
-            "Rear camera active.\n" +
+            "Rear camera active.\n\n" +
             "Point it at the QR code."
         );
 
-
-        /*
-         * Start QR scanning.
-         */
 
         scanLoop();
 
@@ -726,7 +913,7 @@ function stopCamera() {
 
 
 /* =====================================================
-   QR SCAN LOOP
+   SCAN LOOP
 ===================================================== */
 
 function scanLoop() {
@@ -737,11 +924,13 @@ function scanLoop() {
 
     if (
         video.readyState >=
-        HTMLMediaElement.HAVE_ENOUGH_DATA
+        HTMLMediaElement
+            .HAVE_ENOUGH_DATA
     ) {
 
+
         /*
-         * Use actual camera dimensions.
+         * Use actual camera resolution.
          */
 
         if (
@@ -781,6 +970,10 @@ function scanLoop() {
                 );
 
 
+            /*
+             * Decode QR.
+             */
+
             const result =
                 jsQR(
                     image.data,
@@ -811,6 +1004,10 @@ function scanLoop() {
     }
 
 
+    /*
+     * Continue scanning.
+     */
+
     animationFrame =
         requestAnimationFrame(
             scanLoop
@@ -824,13 +1021,15 @@ function scanLoop() {
 
 function processQR(data) {
 
+
     /*
-     * Ignore anything that isn't our
-     * transfer protocol.
+     * Ignore unrelated QR codes.
      */
 
     if (
-        !data.startsWith("QRF1|")
+        !data.startsWith(
+            "QRF1|"
+        )
     ) {
 
         return;
@@ -842,8 +1041,10 @@ function processQR(data) {
 
 
     /*
-     * Don't process the exact same QR
-     * repeatedly while it remains visible.
+     * The same QR can remain
+     * visible for several frames.
+
+     * Don't repeatedly process it.
      */
 
     if (
@@ -863,15 +1064,20 @@ function processQR(data) {
 
 
     /*
-     * Packet:
+     * Find packet separators.
 
-       QRF1|
-       frame|
-       totalFrames|
-       filename|
-       fileSize|
-       base64Data
-    */
+     QRF1
+     |
+     frame
+     |
+     total
+     |
+     filename
+     |
+     filesize
+     |
+     payload
+     */
 
     const p1 =
         data.indexOf("|");
@@ -913,6 +1119,10 @@ function processQR(data) {
     }
 
 
+    /*
+     * Parse frame number.
+     */
+
     const frameNumber =
         Number(
             data.substring(
@@ -921,6 +1131,10 @@ function processQR(data) {
             )
         );
 
+
+    /*
+     * Parse total frame count.
+     */
 
     const totalFrames =
         Number(
@@ -931,12 +1145,20 @@ function processQR(data) {
         );
 
 
+    /*
+     * Filename.
+     */
+
     const encodedFilename =
         data.substring(
             p3 + 1,
             p4
         );
 
+
+    /*
+     * Original file size.
+     */
 
     const fileSize =
         Number(
@@ -947,32 +1169,36 @@ function processQR(data) {
         );
 
 
+    /*
+     * Base64 payload.
+     */
+
     const payload =
         data.substring(
             p5 + 1
         );
 
 
-    /*
-     * Validate frame number.
-     */
+    /* =================================================
+       VALIDATION
+    ================================================= */
+
 
     if (
-        !Number.isInteger(frameNumber) ||
-        frameNumber < 0 ||
-        frameNumber >= totalFrames
+        !Number.isInteger(
+            frameNumber
+        ) ||
+        frameNumber < 0
     ) {
 
         return;
     }
 
 
-    /*
-     * Validate total frame count.
-     */
-
     if (
-        !Number.isInteger(totalFrames) ||
+        !Number.isInteger(
+            totalFrames
+        ) ||
         totalFrames <= 0
     ) {
 
@@ -980,12 +1206,19 @@ function processQR(data) {
     }
 
 
-    /*
-     * Validate file size.
-     */
+    if (
+        frameNumber >=
+        totalFrames
+    ) {
+
+        return;
+    }
+
 
     if (
-        !Number.isFinite(fileSize) ||
+        !Number.isFinite(
+            fileSize
+        ) ||
         fileSize < 0
     ) {
 
@@ -993,11 +1226,12 @@ function processQR(data) {
     }
 
 
-    /*
-     * Decode filename.
-     */
+    /* =================================================
+       FILENAME
+    ================================================= */
 
     let filename;
+
 
     try {
 
@@ -1014,16 +1248,25 @@ function processQR(data) {
     }
 
 
-    /*
-     * Detect a new transfer.
-     */
+    /* =================================================
+       NEW TRANSFER
+    ================================================= */
+
 
     if (
         !transfer ||
-        transfer.filename !== filename ||
-        transfer.fileSize !== fileSize ||
-        transfer.totalFrames !== totalFrames
+        transfer.filename !==
+            filename ||
+        transfer.fileSize !==
+            fileSize ||
+        transfer.totalFrames !==
+            totalFrames
     ) {
+
+        /*
+         * A completely different
+         * transfer has appeared.
+         */
 
         transfer = {
 
@@ -1039,14 +1282,40 @@ function processQR(data) {
         };
 
 
+        /*
+         * Clear packets from
+         * previous transfer.
+         */
+
         frames.clear();
 
+
+        /*
+         * Clear completed file.
+         */
+
+        completedFileBlob =
+            null;
+
+        completedFileName =
+            null;
+
+
+        downloadButton.disabled =
+            true;
+
+
+        /*
+         * Reset UI.
+         */
 
         fileNameElement.textContent =
             filename;
 
         fileSizeElement.textContent =
-            formatBytes(fileSize);
+            formatBytes(
+                fileSize
+            );
 
         totalElement.textContent =
             totalFrames;
@@ -1071,28 +1340,45 @@ function processQR(data) {
     }
 
 
+    /* =================================================
+       DUPLICATE CHECK
+    ================================================= */
+
+
     /*
-     * Ignore duplicate frame.
+     * This is what makes automatic
+     * repeated transmission work.
+
+     * If the sender shows a packet
+     * that we already have, ignore it.
+
+     * If it is a packet we missed
+     * earlier, store it now.
      */
 
     if (
-        frames.has(frameNumber)
+        frames.has(
+            frameNumber
+        )
     ) {
 
         return;
     }
 
 
-    /*
-     * Decode Base64.
-     */
+    /* =================================================
+       DECODE PAYLOAD
+    ================================================= */
 
     let bytes;
+
 
     try {
 
         bytes =
-            base64ToBytes(payload);
+            base64ToBytes(
+                payload
+            );
 
     }
     catch (error) {
@@ -1106,9 +1392,9 @@ function processQR(data) {
     }
 
 
-    /*
-     * Store frame.
-     */
+    /* =================================================
+       STORE FRAME
+    ================================================= */
 
     frames.set(
         frameNumber,
@@ -1116,16 +1402,16 @@ function processQR(data) {
     );
 
 
-    /*
-     * Update progress.
-     */
+    /* =================================================
+       UPDATE PROGRESS
+    ================================================= */
 
     updateProgress();
 
 
-    /*
-     * Check completion.
-     */
+    /* =================================================
+       CHECK COMPLETION
+    ================================================= */
 
     if (
         frames.size ===
@@ -1150,15 +1436,17 @@ function updateProgress() {
     const received =
         frames.size;
 
+
     const total =
         transfer.totalFrames;
+
 
     const missing =
         total - received;
 
 
     const percentage =
-        Math.round(
+        Math.floor(
             received /
             total *
             100
@@ -1168,11 +1456,14 @@ function updateProgress() {
     receivedElement.textContent =
         received.toLocaleString();
 
+
     totalElement.textContent =
         total.toLocaleString();
 
+
     missingElement.textContent =
         missing.toLocaleString();
+
 
     percentElement.textContent =
         percentage + "%";
@@ -1189,7 +1480,7 @@ function updateProgress() {
         received.toLocaleString() +
         " / " +
         total.toLocaleString() +
-        " frames"
+        " packets"
     );
 }
 
@@ -1200,18 +1491,30 @@ function updateProgress() {
 
 function rebuildFile() {
 
+    /*
+     * Prevent rebuilding twice.
+     */
+
+    if (
+        completedFileBlob
+    ) {
+
+        return;
+    }
+
+
     setStatus(
-        "All QR frames received.\n" +
-        "Rebuilding file..."
+        "✓ All packets received.\n\n" +
+        "Checking file..."
     );
 
 
+    /* =================================================
+       VERIFY EVERY FRAME
+    ================================================= */
+
     let totalBytes = 0;
 
-
-    /*
-     * Verify every frame exists.
-     */
 
     for (
         let i = 0;
@@ -1224,6 +1527,15 @@ function rebuildFile() {
 
 
         if (!chunk) {
+
+            /*
+             * This shouldn't normally
+             * happen because completion
+             * requires every frame.
+
+             * But keep this check for
+             * safety.
+             */
 
             showError(
                 "Frame " +
@@ -1240,9 +1552,9 @@ function rebuildFile() {
     }
 
 
-    /*
-     * Verify final size.
-     */
+    /* =================================================
+       VERIFY FILE SIZE
+    ================================================= */
 
     if (
         totalBytes !==
@@ -1250,7 +1562,7 @@ function rebuildFile() {
     ) {
 
         showError(
-            "File size mismatch.\n\n" +
+            "File size verification failed.\n\n" +
             "Expected: " +
             transfer.fileSize +
             " bytes\n" +
@@ -1263,9 +1575,9 @@ function rebuildFile() {
     }
 
 
-    /*
-     * Allocate output.
-     */
+    /* =================================================
+       CREATE OUTPUT
+    ================================================= */
 
     const output =
         new Uint8Array(
@@ -1276,9 +1588,9 @@ function rebuildFile() {
     let offset = 0;
 
 
-    /*
-     * Restore frames in order.
-     */
+    /* =================================================
+       REASSEMBLE IN ORDER
+    ================================================= */
 
     for (
         let i = 0;
@@ -1301,11 +1613,11 @@ function rebuildFile() {
     }
 
 
-    /*
-     * Create file Blob.
-     */
+    /* =================================================
+       CREATE BLOB
+    ================================================= */
 
-    const blob =
+    completedFileBlob =
         new Blob(
             [output],
             {
@@ -1315,63 +1627,37 @@ function rebuildFile() {
         );
 
 
-    /*
-     * Create download URL.
-     */
-
-    const url =
-        URL.createObjectURL(blob);
-
-
-    /*
-     * Download using original filename.
-     */
-
-    const link =
-        document.createElement("a");
-
-
-    link.href =
-        url;
-
-    link.download =
+    completedFileName =
         transfer.filename;
 
 
-    document.body.appendChild(link);
+    /* =================================================
+       ENABLE DOWNLOAD
+    ================================================= */
 
-    link.click();
+    downloadButton.disabled =
+        false;
 
-    link.remove();
-
-
-    /*
-     * Release memory later.
-     */
-
-    setTimeout(
-        function () {
-
-            URL.revokeObjectURL(url);
-
-        },
-        30000
-    );
-
-
-    /*
-     * Success.
-     */
 
     progressBar.style.width =
         "100%";
 
+
     percentElement.textContent =
         "100%";
+
+
+    receivedElement.textContent =
+        transfer.totalFrames;
+
 
     missingElement.textContent =
         "0";
 
+
+    /* =================================================
+       SUCCESS
+    ================================================= */
 
     statusElement.className =
         "status ok";
@@ -1383,7 +1669,89 @@ function rebuildFile() {
         "\n\n" +
         formatBytes(
             transfer.fileSize
+        ) +
+        "\n\n" +
+        "The file is ready to download.";
+}
+
+
+/* =====================================================
+   DOWNLOAD FILE
+===================================================== */
+
+downloadButton.addEventListener(
+    "click",
+    downloadFile
+);
+
+
+function downloadFile() {
+
+    if (
+        !completedFileBlob ||
+        !completedFileName
+    ) {
+
+        return;
+    }
+
+
+    /*
+     * Create temporary URL.
+     */
+
+    const url =
+        URL.createObjectURL(
+            completedFileBlob
         );
+
+
+    /*
+     * Create download link.
+     */
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+    link.download =
+        completedFileName;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    /*
+     * Release URL later.
+
+     * We keep the Blob itself so
+     * the user can press Download
+     * again if necessary.
+     */
+
+    setTimeout(
+        function () {
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        },
+        30000
+    );
 }
 
 
@@ -1440,7 +1808,9 @@ function showError(message) {
     statusElement.textContent =
         "❌ " + message;
 
-    console.error(message);
+    console.error(
+        message
+    );
 }
 
 
@@ -1450,15 +1820,27 @@ function showError(message) {
 
 function formatBytes(bytes) {
 
-    if (bytes === 0)
+    if (
+        bytes === 0
+    ) {
+
         return "0 B";
+    }
 
 
-    if (bytes < 1024)
-        return bytes + " B";
+    if (
+        bytes < 1024
+    ) {
+
+        return bytes +
+            " B";
+    }
 
 
-    if (bytes < 1024 * 1024) {
+    if (
+        bytes <
+        1024 * 1024
+    ) {
 
         return (
             bytes / 1024
@@ -1469,7 +1851,9 @@ function formatBytes(bytes) {
 
     if (
         bytes <
-        1024 * 1024 * 1024
+        1024 *
+        1024 *
+        1024
     ) {
 
         return (
@@ -1493,4 +1877,5 @@ function formatBytes(bytes) {
 </script>
 
 </body>
+
 </html>
