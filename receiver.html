@@ -23,30 +23,61 @@
 const video = document.getElementById("video");
 const status = document.getElementById("status");
 
-async function start() {
-    try {
-        status.textContent = "Requesting camera...";
+// async function start() {
+//     try {
+//         status.textContent = "Requesting camera...";
 
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: false
-            });
+//         const stream =
+//             await navigator.mediaDevices.getUserMedia({
+//                 video: true,
+//                 audio: false
+//             });
+
+//         video.srcObject = stream;
+
+//         status.textContent =
+//             "Camera started successfully.";
+//     }
+//     catch (e) {
+//         status.textContent =
+//             e.name + " - " + e.message;
+
+//         console.error(e);
+//     }
+// }
+
+// start();
+  async function startCamera() {
+    try {
+        statusElement.textContent = "Starting camera...";
+
+        // Do NOT specify resolution or facingMode initially.
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+        });
 
         video.srcObject = stream;
 
-        status.textContent =
-            "Camera started successfully.";
-    }
-    catch (e) {
-        status.textContent =
-            e.name + " - " + e.message;
+        await video.play();
 
-        console.error(e);
+        statusElement.textContent =
+            "Camera started. Scanning...";
+
+        scanning = true;
+        scanLoop();
+
+    } catch (error) {
+        console.error("Camera error:", error);
+
+        statusElement.textContent =
+            "Camera access failed: " +
+            error.name +
+            " - " +
+            error.message;
     }
 }
-
-start();
+startCamera();
 </script>
 
 </body>
