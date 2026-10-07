@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0">
@@ -14,7 +11,6 @@
 <script src="./jsQR.js"></script>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
@@ -23,22 +19,16 @@ body {
     margin: 0;
     min-height: 100vh;
 
-    background: #07111f;
-
+    background: #08111f;
     color: #f8fafc;
 
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 .app {
     width: min(900px, 96vw);
     margin: auto;
-    padding: 12px;
+    padding: 15px;
 }
 
 .card {
@@ -48,109 +38,63 @@ body {
 
     border-radius: 18px;
 
-    padding: 16px;
+    padding: 18px;
 }
 
 h1 {
-    margin: 0;
     text-align: center;
+    margin: 0;
 }
 
 .subtitle {
     text-align: center;
     color: #94a3b8;
-    margin: 5px 0 14px;
 }
 
-
-/* =====================================================
-   CAMERA
-===================================================== */
-
-.camera {
-    position: relative;
-
-    width: 100%;
-
-    aspect-ratio: 4 / 3;
-
-    background: #000;
-
-    border-radius: 14px;
-
-    overflow: hidden;
-}
-
-#video {
-    width: 100%;
-    height: 100%;
-
+video {
     display: block;
+
+    width: 100%;
+
+    max-height: 65vh;
 
     object-fit: cover;
 
-    background: #000;
+    background: black;
+
+    border-radius: 12px;
+
+    transform: none;
 }
 
-
-/* =====================================================
-   SCAN GUIDE
-===================================================== */
-
-.scan-box {
-
-    position: absolute;
-
-    width: min(72%, 430px);
-
-    aspect-ratio: 1;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%);
-
-    border:
-        3px solid #22c55e;
-
-    border-radius: 14px;
-
-    pointer-events: none;
-
-    box-shadow:
-        0 0 0 9999px
-        rgba(0, 0, 0, .22);
+canvas {
+    display: none;
 }
-
-
-/* =====================================================
-   BUTTONS
-===================================================== */
 
 .controls {
     text-align: center;
+
     margin: 12px 0;
 }
 
 button {
+    padding: 12px 20px;
+
     border: 0;
 
-    border-radius: 9px;
-
-    padding: 12px 22px;
-
-    margin: 4px;
-
-    font-size: 15px;
-
-    font-weight: 700;
-
-    color: white;
+    border-radius: 8px;
 
     background: #2563eb;
 
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
     cursor: pointer;
+
+    margin: 4px;
 }
 
 button.stop {
@@ -159,58 +103,40 @@ button.stop {
 
 button.download {
     background: #16a34a;
-
-    width:
-        calc(100% - 8px);
-
-    margin-top: 10px;
-
-    font-size: 17px;
 }
 
 button:disabled {
-    opacity: .4;
+    opacity: .45;
+
     cursor: not-allowed;
 }
 
-
-/* =====================================================
-   STATUS
-===================================================== */
-
 .status {
-    margin-top: 10px;
+    margin-top: 12px;
 
     padding: 12px;
 
-    border-radius: 9px;
-
-    text-align: center;
-
     background: #0b1525;
 
-    color: #cbd5e1;
+    border-radius: 8px;
+
+    text-align: center;
 
     white-space: pre-wrap;
 }
 
-.status.ok {
+.success {
     color: #4ade80;
 }
 
-.status.error {
+.error {
     color: #f87171;
 }
 
-
-/* =====================================================
-   PROGRESS
-===================================================== */
-
 .progress {
-    height: 24px;
+    height: 22px;
 
-    margin-top: 14px;
+    margin-top: 12px;
 
     background: #334155;
 
@@ -220,25 +146,12 @@ button:disabled {
 }
 
 #progressBar {
-    width: 0%;
-
     height: 100%;
 
-    background:
-        linear-gradient(
-            90deg,
-            #22c55e,
-            #16a34a
-        );
+    width: 0%;
 
-    transition:
-        width .15s;
+    background: #22c55e;
 }
-
-
-/* =====================================================
-   INFO
-===================================================== */
 
 .info {
     display: grid;
@@ -248,87 +161,79 @@ button:disabled {
 
     gap: 8px;
 
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
 .box {
-    padding: 10px;
-
-    text-align: center;
-
     background: #0b1525;
 
+    padding: 10px;
+
     border-radius: 8px;
+
+    text-align: center;
 }
 
 .value {
     display: block;
 
-    font-weight: 800;
+    font-weight: bold;
 
     overflow-wrap: anywhere;
 }
 
 .label {
-    display: block;
-
-    margin-top: 3px;
+    color: #94a3b8;
 
     font-size: 12px;
-
-    color: #94a3b8;
 }
 
-.transfer-id {
-    color: #60a5fa;
-
-    font-family: monospace;
-}
-
-
-/* =====================================================
-   MISSING PACKETS
-===================================================== */
-
-.missing-box {
-
-    margin-top: 10px;
-
-    padding: 12px;
+.missing-area {
+    margin-top: 15px;
 
     background: #0b1525;
 
-    border-radius: 9px;
+    border-radius: 10px;
+
+    padding: 15px;
+}
+
+#missingList {
+    width: 100%;
+
+    min-height: 100px;
+
+    background: #111c2e;
+
+    border: 1px solid #334155;
+
+    color: #f8fafc;
+
+    border-radius: 8px;
+
+    padding: 10px;
 
     font-family: monospace;
 
-    font-size: 13px;
-
-    line-height: 1.5;
-
-    max-height: 180px;
-
-    overflow: auto;
-
-    word-break: break-word;
+    resize: vertical;
 }
 
+.warning {
+    color: #fbbf24;
+}
 
 @media(max-width:600px) {
-
-    .card {
-        padding: 10px;
-    }
 
     .info {
         grid-template-columns: 1fr;
     }
+
+    .card {
+        padding: 10px;
+    }
 }
-
 </style>
-
 </head>
-
 
 <body>
 
@@ -339,60 +244,38 @@ button:disabled {
 <h1>📥 Offline QR File Receiver</h1>
 
 <p class="subtitle">
-Android + iPhone • Rear Camera • QRF2 Resume
+Scan QR packets using the rear camera
 </p>
 
 
-<!-- =================================================
-     CAMERA
-================================================== -->
-
-<div class="camera">
+<!-- CAMERA -->
 
 <video
     id="video"
     autoplay
-    playsinline
-    muted>
+    playsinline>
 </video>
 
-<div class="scan-box"></div>
-
-</div>
+<canvas id="canvas"></canvas>
 
 
 <div class="controls">
 
 <button id="startButton">
-📷 Start Rear Camera
+Start Camera
 </button>
 
 <button
     id="stopButton"
     class="stop"
     disabled>
-Stop
+Stop Camera
 </button>
 
 </div>
 
 
-<!-- =================================================
-     STATUS
-================================================== -->
-
-<div
-    id="status"
-    class="status">
-
-Ready.
-
-</div>
-
-
-<!-- =================================================
-     PROGRESS
-================================================== -->
+<!-- PROGRESS -->
 
 <div class="progress">
 
@@ -401,22 +284,31 @@ Ready.
 </div>
 
 
-<!-- =================================================
-     TRANSFER INFORMATION
-================================================== -->
+<div
+    id="status"
+    class="status">
+
+Press Start Camera.
+
+</div>
+
+
+<!-- INFORMATION -->
 
 <div class="info">
 
 <div class="box">
 
 <span
-    id="fileName"
+    id="transferId"
     class="value">
+
 —
+
 </span>
 
 <span class="label">
-File
+Transfer ID
 </span>
 
 </div>
@@ -427,7 +319,9 @@ File
 <span
     id="received"
     class="value">
+
 0
+
 </span>
 
 <span class="label">
@@ -442,7 +336,9 @@ Received
 <span
     id="total"
     class="value">
+
 —
+
 </span>
 
 <span class="label">
@@ -459,62 +355,15 @@ Total
 <div class="box">
 
 <span
-    id="fileSize"
+    id="percentage"
     class="value">
-—
-</span>
 
-<span class="label">
-Size
-</span>
-
-</div>
-
-
-<div class="box">
-
-<span
-    id="missing"
-    class="value">
-—
-</span>
-
-<span class="label">
-Missing
-</span>
-
-</div>
-
-
-<div class="box">
-
-<span
-    id="percent"
-    class="value">
 0%
+
 </span>
 
 <span class="label">
-Progress
-</span>
-
-</div>
-
-</div>
-
-
-<div class="info">
-
-<div class="box">
-
-<span
-    id="transferId"
-    class="value transfer-id">
-—
-</span>
-
-<span class="label">
-Transfer ID
+Complete
 </span>
 
 </div>
@@ -523,28 +372,32 @@ Transfer ID
 <div class="box">
 
 <span
-    id="lastPacket"
+    id="duplicate"
     class="value">
-—
-</span>
 
-<span class="label">
-Last Packet
-</span>
-
-</div>
-
-
-<div class="box">
-
-<span
-    id="scanCount"
-    class="value">
 0
+
 </span>
 
 <span class="label">
-Packets Scanned
+Duplicates
+</span>
+
+</div>
+
+
+<div class="box">
+
+<span
+    id="filename"
+    class="value">
+
+—
+
+</span>
+
+<span class="label">
+File
 </span>
 
 </div>
@@ -552,38 +405,52 @@ Packets Scanned
 </div>
 
 
-<!-- =================================================
-     MISSING PACKETS
-================================================== -->
+<!-- MISSING PACKETS -->
 
-<div
-    id="missingBox"
-    class="missing-box">
+<div class="missing-area">
 
-Missing packets will appear here.
+<strong>
+Missing Packets
+</strong>
 
-</div>
+<p class="warning">
+Copy this list to the sender's
+"Manual Missing Packet Recovery" box.
+</p>
 
 
-<!-- =================================================
-     DOWNLOAD
-================================================== -->
+<textarea
+    id="missingList"
+    readonly
+    placeholder="No missing packets yet.">
+</textarea>
+
 
 <div class="controls">
+
+<button
+    id="copyMissingButton">
+
+Copy Missing List
+
+</button>
 
 <button
     id="downloadButton"
     class="download"
     disabled>
 
-⬇ Download File
+Download File
 
 </button>
 
 </div>
 
+</div>
+
 
 </div>
+
 </div>
 
 
@@ -591,24 +458,35 @@ Missing packets will appear here.
 
 /*
 =========================================================
-QRF2 RECEIVER
+OFFLINE QR RECEIVER
 =========================================================
 
-Packet:
+EXPECTED PACKET:
 
-QRF2|TRANSFER_ID|PACKET_ID|TOTAL_PACKETS|FILENAME|FILE_SIZE|BASE64
+QRF3|
+TRANSFER_ID|
+PACKET_ID|
+TOTAL_PACKETS|
+FILENAME|
+FILE_SIZE|
+BASE64_DATA
 
-The receiver:
 
-1. Detects Transfer ID.
-2. Creates a packet map.
-3. Stores packets by packet ID.
-4. Ignores duplicates.
-5. Detects missing packet IDs.
-6. Accepts retransmissions.
-7. Rebuilds only when every packet exists.
-8. Verifies the final byte count.
-9. Enables download only after verification.
+The receiver does NOT treat each packet as a file.
+
+All packets are pieces of ONE selected file.
+
+Example:
+
+MyFolder.zip
+
+    packet 0
+    packet 1
+    packet 2
+    ...
+    packet 579
+
+Only when ALL packets exist is the ZIP reconstructed.
 =========================================================
 */
 
@@ -618,99 +496,8 @@ const video =
         "video"
     );
 
-const startButton =
-    document.getElementById(
-        "startButton"
-    );
-
-const stopButton =
-    document.getElementById(
-        "stopButton"
-    );
-
-const downloadButton =
-    document.getElementById(
-        "downloadButton"
-    );
-
-const statusElement =
-    document.getElementById(
-        "status"
-    );
-
-const progressBar =
-    document.getElementById(
-        "progressBar"
-    );
-
-const fileNameElement =
-    document.getElementById(
-        "fileName"
-    );
-
-const receivedElement =
-    document.getElementById(
-        "received"
-    );
-
-const totalElement =
-    document.getElementById(
-        "total"
-    );
-
-const fileSizeElement =
-    document.getElementById(
-        "fileSize"
-    );
-
-const missingElement =
-    document.getElementById(
-        "missing"
-    );
-
-const percentElement =
-    document.getElementById(
-        "percent"
-    );
-
-const transferIdElement =
-    document.getElementById(
-        "transferId"
-    );
-
-const lastPacketElement =
-    document.getElementById(
-        "lastPacket"
-    );
-
-const scanCountElement =
-    document.getElementById(
-        "scanCount"
-    );
-
-const missingBox =
-    document.getElementById(
-        "missingBox"
-    );
-
-
-/* =====================================================
-   CAMERA
-===================================================== */
-
-let stream = null;
-
-let scanning = false;
-
-let animationFrame = null;
-
-
-/* =====================================================
-   CANVAS
-===================================================== */
-
 const canvas =
-    document.createElement(
+    document.getElementById(
         "canvas"
     );
 
@@ -723,107 +510,137 @@ const ctx =
     );
 
 
-/* =====================================================
-   TRANSFER
-===================================================== */
+const startButton =
+    document.getElementById(
+        "startButton"
+    );
 
-let transfer = null;
+const stopButton =
+    document.getElementById(
+        "stopButton"
+    );
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+const progressBar =
+    document.getElementById(
+        "progressBar"
+    );
+
+const transferIdElement =
+    document.getElementById(
+        "transferId"
+    );
+
+const receivedElement =
+    document.getElementById(
+        "received"
+    );
+
+const totalElement =
+    document.getElementById(
+        "total"
+    );
+
+const percentageElement =
+    document.getElementById(
+        "percentage"
+    );
+
+const duplicateElement =
+    document.getElementById(
+        "duplicate"
+    );
+
+const filenameElement =
+    document.getElementById(
+        "filename"
+    );
+
+const missingList =
+    document.getElementById(
+        "missingList"
+    );
+
+const copyMissingButton =
+    document.getElementById(
+        "copyMissingButton"
+    );
+
+const downloadButton =
+    document.getElementById(
+        "downloadButton"
+    );
 
 
 /*
- * Map:
- *
- * packet ID → Uint8Array
- */
+=========================================================
+STATE
+=========================================================
+*/
 
-const packets =
-    new Map();
+let stream = null;
 
+let scanning = false;
 
-/*
- * Completed file.
- */
-
-let completedFileBlob = null;
-
-let completedFileName = null;
+let animationFrame = null;
 
 
 /*
- * Used to avoid processing the exact same
- * QR many times in consecutive camera frames.
- */
+Transfer information.
+*/
 
-let lastQR = "";
+let transferId = null;
 
-let lastQRTime = 0;
+let totalPackets = 0;
+
+let filename = "";
+
+let expectedFileSize = 0;
 
 
 /*
- * Count successfully decoded packets.
- */
+Array containing packet data.
 
-let scanCount = 0;
+packets[0] = packet 0
+packets[1] = packet 1
 
+etc.
+*/
 
-/* =====================================================
-   ENVIRONMENT CHECK
-===================================================== */
-
-function checkCameraEnvironment() {
-
-    if (
-        !window.isSecureContext &&
-        location.hostname !==
-            "localhost" &&
-        location.hostname !==
-            "127.0.0.1"
-    ) {
-
-        showError(
-            "Camera requires HTTPS.\n\n" +
-            "Open receiver.html using your " +
-            "GitHub Pages HTTPS address."
-        );
-
-        return false;
-    }
+let packets = [];
 
 
-    if (
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-    ) {
+/*
+Set makes duplicate detection fast.
+*/
 
-        showError(
-            "This browser does not provide camera access."
-        );
-
-        return false;
-    }
+let receivedIds =
+    new Set();
 
 
-    if (
-        typeof jsQR ===
-        "undefined"
-    ) {
-
-        showError(
-            "jsQR.js was not loaded.\n\n" +
-            "Put jsQR.js beside receiver.html."
-        );
-
-        return false;
-    }
+let duplicateCount = 0;
 
 
-    return true;
-}
+/*
+Prevent processing the exact same QR
+hundreds of times while it remains
+on screen.
+*/
+
+let lastDecodedText = "";
+
+let lastDecodedTime = 0;
 
 
-/* =====================================================
-   START CAMERA
-===================================================== */
+/*
+=========================================================
+START CAMERA
+=========================================================
+*/
 
 startButton.addEventListener(
     "click",
@@ -834,86 +651,64 @@ startButton.addEventListener(
 async function startCamera() {
 
     if (
-        !checkCameraEnvironment()
+        typeof jsQR !==
+        "function"
     ) {
+
+        status.className =
+            "status error";
+
+        status.textContent =
+            "jsQR was not loaded.\n\n" +
+            "Make sure jsQR.js is available.";
 
         return;
     }
 
 
+    stopCamera();
+
+
     try {
 
-        setStatus(
-            "Requesting rear camera..."
-        );
+        /*
+         * environment = rear camera.
 
-
-        const constraints = {
-
-            video: {
-
-                facingMode: {
-                    ideal:
-                        "environment"
-                },
-
-                width: {
-                    ideal: 1280
-                },
-
-                height: {
-                    ideal: 720
-                }
-            },
-
-            audio: false
-        };
-
+         * This works on modern Android/iPhone
+         * browsers when camera permission is granted.
+         */
 
         stream =
-            await navigator
-                .mediaDevices
-                .getUserMedia(
-                    constraints
-                );
+            await navigator.mediaDevices.getUserMedia(
+                {
+                    video: {
+                        facingMode: {
+                            ideal: "environment"
+                        },
+
+                        width: {
+                            ideal: 1280
+                        },
+
+                        height: {
+                            ideal: 720
+                        }
+                    },
+
+                    audio: false
+                }
+            );
 
 
         video.srcObject =
             stream;
 
 
-        /*
-         * Important for iPhone.
-         */
-
-        video.setAttribute(
-            "playsinline",
-            ""
-        );
-
-        video.setAttribute(
-            "autoplay",
-            ""
-        );
-
-        video.muted = true;
-
-
-        try {
-
-            await video.play();
-
-        }
-        catch(error) {
-
-            console.log(
-                "Video play:",
-                error
-            );
-        }
+        await video.play();
 
 
         scanning = true;
+
 
         startButton.disabled =
             true;
@@ -922,10 +717,12 @@ async function startCamera() {
             false;
 
 
-        setStatus(
-            "✓ Rear camera active.\n\n" +
-            "Point the camera at the sender QR."
-        );
+        status.className =
+            "status";
+
+        status.textContent =
+            "Camera running.\n\n" +
+            "Point the rear camera at the sender QR.";
 
 
         scanLoop();
@@ -934,1086 +731,29 @@ async function startCamera() {
     catch(error) {
 
         console.error(
-            "Camera error:",
             error
         );
 
 
-        handleCameraError(
-            error
-        );
-    }
-}
+        status.className =
+            "status error";
 
 
-/* =====================================================
-   CAMERA ERROR
-===================================================== */
-
-function handleCameraError(
-    error
-) {
-
-    let message =
-        "Camera access failed.";
-
-
-    if (
-        error.name ===
-        "NotAllowedError"
-    ) {
-
-        message =
-            "Camera permission was denied.\n\n" +
-            "Allow camera access for this site " +
-            "and reload the page.";
-
-    }
-    else if (
-        error.name ===
-        "NotReadableError"
-    ) {
-
-        message =
-            "The camera could not be started.\n\n" +
-            "Another tab or application may already " +
-            "be using the camera.";
-
-    }
-    else if (
-        error.name ===
-        "NotFoundError"
-    ) {
-
-        message =
-            "No camera was found.";
-
-    }
-    else if (
-        error.name ===
-        "SecurityError"
-    ) {
-
-        message =
-            "Camera access was blocked.\n\n" +
-            "Make sure receiver.html is opened " +
-            "using HTTPS.";
-
-    }
-    else {
-
-        message =
-            "Camera error:\n\n" +
+        status.textContent =
+            "CAMERA ERROR: " +
             error.name +
-            "\n" +
+            " - " +
             error.message;
-    }
 
-
-    showError(
-        message
-    );
-}
-
-
-/* =====================================================
-   SCAN LOOP
-===================================================== */
-
-function scanLoop() {
-
-    if (!scanning) {
-        return;
-    }
-
-
-    if (
-        video.readyState >=
-        HTMLMediaElement
-            .HAVE_ENOUGH_DATA &&
-        video.videoWidth > 0 &&
-        video.videoHeight > 0
-    ) {
-
-
-        if (
-            canvas.width !==
-                video.videoWidth ||
-            canvas.height !==
-                video.videoHeight
-        ) {
-
-            canvas.width =
-                video.videoWidth;
-
-            canvas.height =
-                video.videoHeight;
-        }
-
-
-        ctx.drawImage(
-            video,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-        try {
-
-            const image =
-                ctx.getImageData(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-
-
-            const result =
-                jsQR(
-                    image.data,
-                    image.width,
-                    image.height,
-                    {
-                        inversionAttempts:
-                            "attemptBoth"
-                    }
-                );
-
-
-            if (result) {
-
-                processQR(
-                    result.data
-                );
-            }
-
-        }
-        catch(error) {
-
-            console.error(
-                "QR decoder error:",
-                error
-            );
-        }
-    }
-
-
-    animationFrame =
-        requestAnimationFrame(
-            scanLoop
-        );
-}
-
-
-/* =====================================================
-   PROCESS QRF2
-===================================================== */
-
-function processQR(
-    data
-) {
-
-
-    /*
-     * Only accept our protocol.
-     */
-
-    if (
-        !data.startsWith(
-            "QRF2|"
-        )
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * Avoid processing the exact same QR
-     * repeatedly while it remains on screen.
-     */
-
-    const now =
-        Date.now();
-
-
-    if (
-        data === lastQR &&
-        now - lastQRTime < 120
-    ) {
-
-        return;
-    }
-
-
-    lastQR =
-        data;
-
-    lastQRTime =
-        now;
-
-
-    /*
-     * Parse:
-
-     * QRF2
-     * Transfer ID
-     * Packet ID
-     * Total
-     * Filename
-     * File Size
-     * Base64
-     */
-
-    const parts =
-        data.split("|");
-
-
-    /*
-     * We need at least 7 fields.
-
-     * Base64 itself does not contain '|',
-     * so this is safe for our protocol.
-     */
-
-    if (
-        parts.length < 7
-    ) {
-
-        return;
-    }
-
-
-    const protocol =
-        parts[0];
-
-
-    const transferId =
-        parts[1];
-
-
-    const packetId =
-        Number(
-            parts[2]
-        );
-
-
-    const totalPackets =
-        Number(
-            parts[3]
-        );
-
-
-    const encodedFilename =
-        parts[4];
-
-
-    const originalFileSize =
-        Number(
-            parts[5]
-        );
-
-
-    const base64 =
-        parts.slice(
-            6
-        ).join("|");
-
-
-    /*
-     * Validate protocol.
-     */
-
-    if (
-        protocol !==
-        "QRF2"
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * Validate transfer ID.
-     */
-
-    if (
-        !transferId ||
-        transferId.length >
-            64
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * Validate packet.
-     */
-
-    if (
-        !Number.isInteger(
-            packetId
-        ) ||
-        packetId < 0
-    ) {
-
-        return;
-    }
-
-
-    if (
-        !Number.isInteger(
-            totalPackets
-        ) ||
-        totalPackets <= 0
-    ) {
-
-        return;
-    }
-
-
-    if (
-        packetId >=
-        totalPackets
-    ) {
-
-        return;
-    }
-
-
-    if (
-        !Number.isFinite(
-            originalFileSize
-        ) ||
-        originalFileSize < 0
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * Decode filename.
-     */
-
-    let filename;
-
-
-    try {
-
-        filename =
-            decodeURIComponent(
-                encodedFilename
-            );
-
-    }
-    catch {
-
-        filename =
-            encodedFilename;
-    }
-
-
-    /*
-     * Detect NEW transfer.
-
-     * A different Transfer ID means
-     * a different transfer.
-     */
-
-    if (
-        !transfer ||
-        transfer.id !==
-            transferId
-    ) {
-
-
-        transfer = {
-
-            id:
-                transferId,
-
-            filename:
-                filename,
-
-            fileSize:
-                originalFileSize,
-
-            totalPackets:
-                totalPackets
-
-        };
-
-
-        /*
-         * Clear packets from old transfer.
-         */
-
-        packets.clear();
-
-
-        completedFileBlob =
-            null;
-
-        completedFileName =
-            null;
-
-
-        downloadButton.disabled =
-            true;
-
-
-        /*
-         * Reset UI.
-         */
-
-        transferIdElement.textContent =
-            transferId;
-
-        fileNameElement.textContent =
-            filename;
-
-        fileSizeElement.textContent =
-            formatBytes(
-                originalFileSize
-            );
-
-        totalElement.textContent =
-            totalPackets;
-
-        receivedElement.textContent =
-            "0";
-
-        missingElement.textContent =
-            totalPackets;
-
-        percentElement.textContent =
-            "0%";
-
-        progressBar.style.width =
-            "0%";
-
-        missingBox.textContent =
-            "Missing packets will appear here.";
-
-
-        setStatus(
-            "New transfer detected.\n\n" +
-            "Transfer ID: " +
-            transferId +
-            "\n\n" +
-            filename
-        );
-    }
-
-
-    /*
-     * Safety check.
-
-     * If a packet from another transfer somehow
-     * appears, ignore it.
-     */
-
-    if (
-        transfer.id !==
-        transferId
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * Check metadata consistency.
-
-     * A corrupted/mismatched transfer packet
-     * should not modify the current transfer.
-     */
-
-    if (
-        transfer.totalPackets !==
-            totalPackets ||
-        transfer.fileSize !==
-            originalFileSize
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * If already received, ignore duplicate.
-
-     * This is what makes retransmission safe.
-     */
-
-    if (
-        packets.has(
-            packetId
-        )
-    ) {
-
-        lastPacketElement.textContent =
-            packetId;
-
-        return;
-    }
-
-
-    /*
-     * Decode payload.
-     */
-
-    let bytes;
-
-
-    try {
-
-        bytes =
-            base64ToBytes(
-                base64
-            );
-
-    }
-    catch(error) {
-
-        console.error(
-            "Invalid Base64:",
-            error
-        );
-
-        return;
-    }
-
-
-    /*
-     * Store packet.
-
-     * This is the critical part for
-     * missing-packet recovery.
-     */
-
-    packets.set(
-        packetId,
-        bytes
-    );
-
-
-    scanCount++;
-
-
-    scanCountElement.textContent =
-        scanCount.toLocaleString();
-
-
-    lastPacketElement.textContent =
-        packetId;
-
-
-    /*
-     * Update progress and missing list.
-     */
-
-    updateProgress();
-
-
-    /*
-     * Check whether every packet has
-     * arrived.
-     */
-
-    if (
-        packets.size ===
-        transfer.totalPackets
-    ) {
-
-        verifyAndBuildFile();
     }
 }
 
 
-/* =====================================================
-   FIND MISSING PACKETS
-===================================================== */
-
-function getMissingPackets() {
-
-    if (!transfer) {
-        return [];
-    }
-
-
-    const missing = [];
-
-
-    for (
-        let i = 0;
-        i < transfer.totalPackets;
-        i++
-    ) {
-
-        if (
-            !packets.has(i)
-        ) {
-
-            missing.push(i);
-        }
-    }
-
-
-    return missing;
-}
-
-
-/* =====================================================
-   UPDATE PROGRESS
-===================================================== */
-
-function updateProgress() {
-
-    if (!transfer) {
-        return;
-    }
-
-
-    const received =
-        packets.size;
-
-
-    const total =
-        transfer.totalPackets;
-
-
-    const missingList =
-        getMissingPackets();
-
-
-    const missingCount =
-        missingList.length;
-
-
-    const percentage =
-        Math.floor(
-            received /
-            total *
-            100
-        );
-
-
-    receivedElement.textContent =
-        received.toLocaleString();
-
-
-    totalElement.textContent =
-        total.toLocaleString();
-
-
-    missingElement.textContent =
-        missingCount.toLocaleString();
-
-
-    percentElement.textContent =
-        percentage + "%";
-
-
-    progressBar.style.width =
-        percentage + "%";
-
-
-    /*
-     * Display missing packet IDs.
-
-     * Limit the visible list so that a huge
-     * transfer doesn't make the page unusable.
-     */
-
-    if (
-        missingList.length === 0
-    ) {
-
-        missingBox.textContent =
-            "✓ No missing packets.";
-
-    }
-    else {
-
-        const DISPLAY_LIMIT =
-            500;
-
-
-        let text =
-            "Missing packet IDs:\n\n";
-
-
-        if (
-            missingList.length <=
-            DISPLAY_LIMIT
-        ) {
-
-            text +=
-                missingList.join(
-                    ", "
-                );
-
-        }
-        else {
-
-            text +=
-                missingList
-                    .slice(
-                        0,
-                        DISPLAY_LIMIT
-                    )
-                    .join(
-                        ", "
-                    );
-
-
-            text +=
-                "\n\n... +" +
-                (
-                    missingList.length -
-                    DISPLAY_LIMIT
-                ) +
-                " more";
-        }
-
-
-        missingBox.textContent =
-            text;
-    }
-
-
-    /*
-     * Don't show "complete" until
-     * verification actually succeeds.
-     */
-
-    if (
-        missingCount > 0
-    ) {
-
-        setStatus(
-            "Receiving transfer...\n\n" +
-            "ID: " +
-            transfer.id +
-            "\n\n" +
-            received.toLocaleString() +
-            " / " +
-            total.toLocaleString() +
-            " packets\n\n" +
-            "Missing: " +
-            missingCount.toLocaleString() +
-            "\n\n" +
-            "Start the sender again to retransmit " +
-            "the missing packets."
-        );
-    }
-}
-
-
-/* =====================================================
-   VERIFY AND BUILD
-===================================================== */
-
-function verifyAndBuildFile() {
-
-    if (!transfer) {
-        return;
-    }
-
-
-    /*
-     * ALWAYS check actual packet IDs.
-
-     * packets.size alone isn't sufficient.
-     */
-
-    const missing =
-        getMissingPackets();
-
-
-    if (
-        missing.length > 0
-    ) {
-
-        updateProgress();
-
-        return;
-    }
-
-
-    setStatus(
-        "All packets received.\n\n" +
-        "Verifying file..."
-    );
-
-
-    /*
-     * Calculate reconstructed size.
-     */
-
-    let totalBytes = 0;
-
-
-    for (
-        let i = 0;
-        i < transfer.totalPackets;
-        i++
-    ) {
-
-        const packet =
-            packets.get(i);
-
-
-        if (!packet) {
-
-            return;
-        }
-
-
-        totalBytes +=
-            packet.length;
-    }
-
-
-    /*
-     * Original file size MUST match.
-     */
-
-    if (
-        totalBytes !==
-        transfer.fileSize
-    ) {
-
-        completedFileBlob =
-            null;
-
-
-        downloadButton.disabled =
-            true;
-
-
-        setStatus(
-            "File verification failed.\n\n" +
-            "Expected: " +
-            transfer.fileSize +
-            " bytes\n" +
-            "Reconstructed: " +
-            totalBytes +
-            " bytes\n\n" +
-            "Keep the receiver scanning and " +
-            "restart the sender."
-        );
-
-
-        return;
-    }
-
-
-    /*
-     * Reconstruct in packet order.
-     */
-
-    const output =
-        new Uint8Array(
-            totalBytes
-        );
-
-
-    let offset = 0;
-
-
-    for (
-        let i = 0;
-        i < transfer.totalPackets;
-        i++
-    ) {
-
-        const packet =
-            packets.get(i);
-
-
-        output.set(
-            packet,
-            offset
-        );
-
-
-        offset +=
-            packet.length;
-    }
-
-
-    /*
-     * Create final Blob.
-     */
-
-    completedFileBlob =
-        new Blob(
-            [output],
-            {
-                type:
-                    "application/octet-stream"
-            }
-        );
-
-
-    completedFileName =
-        transfer.filename;
-
-
-    /*
-     * Verify Blob size as an additional
-     * final check.
-     */
-
-    if (
-        completedFileBlob.size !==
-        transfer.fileSize
-    ) {
-
-        completedFileBlob =
-            null;
-
-        downloadButton.disabled =
-            true;
-
-        showError(
-            "Final file verification failed."
-        );
-
-        return;
-    }
-
-
-    /*
-     * Everything is correct.
-
-     * NOW enable download.
-     */
-
-    progressBar.style.width =
-        "100%";
-
-    percentElement.textContent =
-        "100%";
-
-    receivedElement.textContent =
-        transfer.totalPackets;
-
-    missingElement.textContent =
-        "0";
-
-
-    missingBox.textContent =
-        "✓ No missing packets.";
-
-
-    downloadButton.disabled =
-        false;
-
-
-    statusElement.className =
-        "status ok";
-
-
-    statusElement.textContent =
-        "✓ TRANSFER COMPLETE\n\n" +
-        "Transfer ID: " +
-        transfer.id +
-        "\n\n" +
-        transfer.filename +
-        "\n\n" +
-        formatBytes(
-            transfer.fileSize
-        ) +
-        "\n\n" +
-        "All packets received and file verified.\n" +
-        "Download is now available.";
-}
-
-
-/* =====================================================
-   DOWNLOAD
-===================================================== */
-
-downloadButton.addEventListener(
-    "click",
-    downloadFile
-);
-
-
-function downloadFile() {
-
-    if (
-        !completedFileBlob ||
-        !completedFileName
-    ) {
-
-        return;
-    }
-
-
-    const url =
-        URL.createObjectURL(
-            completedFileBlob
-        );
-
-
-    const link =
-        document.createElement(
-            "a"
-        );
-
-
-    link.href =
-        url;
-
-
-    link.download =
-        completedFileName;
-
-
-    link.style.display =
-        "none";
-
-
-    document.body.appendChild(
-        link
-    );
-
-
-    link.click();
-
-
-    link.remove();
-
-
-    /*
-     * Keep URL alive for Safari/iOS.
-     */
-
-    setTimeout(
-        function() {
-
-            URL.revokeObjectURL(
-                url
-            );
-
-        },
-        60000
-    );
-}
-
-
-/* =====================================================
-   STOP CAMERA
-===================================================== */
+/*
+=========================================================
+STOP CAMERA
+=========================================================
+*/
 
 stopButton.addEventListener(
     "click",
@@ -2038,15 +778,11 @@ function stopCamera() {
 
     if (stream) {
 
-        stream
-            .getTracks()
+        stream.getTracks()
             .forEach(
-                function(track) {
-
-                    track.stop();
-                }
+                track =>
+                    track.stop()
             );
-
 
         stream = null;
     }
@@ -2059,22 +795,846 @@ function stopCamera() {
     startButton.disabled =
         false;
 
-
     stopButton.disabled =
         true;
+}
 
 
-    setStatus(
-        "Camera stopped.\n\n" +
-        "Received packets are still stored.\n\n" +
-        "You can start the camera again to continue."
+/*
+=========================================================
+SCAN LOOP
+=========================================================
+*/
+
+function scanLoop() {
+
+    if (!scanning) {
+        return;
+    }
+
+
+    if (
+        video.readyState >=
+        HTMLMediaElement.HAVE_CURRENT_DATA
+    ) {
+
+        /*
+         * Use the actual camera dimensions.
+         */
+
+        const width =
+            video.videoWidth;
+
+        const height =
+            video.videoHeight;
+
+
+        if (
+            width > 0 &&
+            height > 0
+        ) {
+
+            canvas.width =
+                width;
+
+            canvas.height =
+                height;
+
+
+            ctx.drawImage(
+                video,
+                0,
+                0,
+                width,
+                height
+            );
+
+
+            const imageData =
+                ctx.getImageData(
+                    0,
+                    0,
+                    width,
+                    height
+                );
+
+
+            const code =
+                jsQR(
+                    imageData.data,
+                    width,
+                    height,
+                    {
+                        inversionAttempts:
+                            "attemptBoth"
+                    }
+                );
+
+
+            if (code) {
+
+                processQR(
+                    code.data
+                );
+            }
+        }
+    }
+
+
+    animationFrame =
+        requestAnimationFrame(
+            scanLoop
+        );
+}
+
+
+/*
+=========================================================
+PROCESS QR
+=========================================================
+*/
+
+function processQR(
+    text
+) {
+
+    const now =
+        Date.now();
+
+
+    /*
+     * Don't repeatedly process exactly
+     * the same visible QR immediately.
+
+     * Wait 250 ms.
+
+     * This still allows the same packet
+     * to be scanned again if necessary.
+     */
+
+    if (
+        text === lastDecodedText &&
+        now - lastDecodedTime < 250
+    ) {
+
+        return;
+    }
+
+
+    lastDecodedText =
+        text;
+
+    lastDecodedTime =
+        now;
+
+
+    if (
+        !text.startsWith(
+            "QRF3|"
+        )
+    ) {
+
+        return;
+    }
+
+
+    parsePacket(
+        text
     );
 }
 
 
-/* =====================================================
-   BASE64 → BYTES
-===================================================== */
+/*
+=========================================================
+PARSE PACKET
+=========================================================
+*/
+
+function parsePacket(
+    text
+) {
+
+    const parts =
+        text.split("|");
+
+
+    /*
+     * Filename and Base64 are the last
+     * two fields.
+
+     * Base64 itself does not contain "|",
+     * so split is safe here.
+     */
+
+    if (
+        parts.length < 7
+    ) {
+
+        return;
+    }
+
+
+    const version =
+        parts[0];
+
+    const incomingTransferId =
+        parts[1];
+
+    const packetId =
+        Number(parts[2]);
+
+    const incomingTotal =
+        Number(parts[3]);
+
+    const incomingFilename =
+        decodeURIComponent(
+            parts[4]
+        );
+
+    const incomingFileSize =
+        Number(parts[5]);
+
+    const base64 =
+        parts.slice(
+            6
+        ).join("|");
+
+
+    if (
+        version !==
+        "QRF3"
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !Number.isInteger(
+            packetId
+        )
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !Number.isInteger(
+            incomingTotal
+        ) ||
+        incomingTotal <= 0
+    ) {
+
+        return;
+    }
+
+
+    /*
+     * FIRST PACKET
+
+     * Establish transfer metadata.
+     */
+
+    if (
+        transferId === null
+    ) {
+
+        transferId =
+            incomingTransferId;
+
+        totalPackets =
+            incomingTotal;
+
+        filename =
+            incomingFilename;
+
+        expectedFileSize =
+            incomingFileSize;
+
+
+        packets =
+            new Array(
+                totalPackets
+            );
+
+
+        receivedIds =
+            new Set();
+
+
+        transferIdElement.textContent =
+            transferId;
+
+        totalElement.textContent =
+            totalPackets;
+
+        filenameElement.textContent =
+            filename;
+
+
+        status.textContent =
+            "Transfer detected.\n\n" +
+            "Transfer ID: " +
+            transferId;
+    }
+
+
+    /*
+     * Reject packets belonging to another
+     * transfer.
+
+     * This is important if another QR
+     * appears in front of the camera.
+     */
+
+    if (
+        incomingTransferId !==
+        transferId
+    ) {
+
+        return;
+    }
+
+
+    /*
+     * Reject inconsistent packet counts.
+     */
+
+    if (
+        incomingTotal !==
+        totalPackets
+    ) {
+
+        return;
+    }
+
+
+    /*
+     * Validate packet ID.
+     */
+
+    if (
+        packetId < 0 ||
+        packetId >= totalPackets
+    ) {
+
+        return;
+    }
+
+
+    /*
+     * DUPLICATE
+
+     * The receiver already has this packet.
+     */
+
+    if (
+        receivedIds.has(
+            packetId
+        )
+    ) {
+
+        duplicateCount++;
+
+        duplicateElement.textContent =
+            duplicateCount;
+
+        return;
+    }
+
+
+    /*
+     * Decode Base64.
+     */
+
+    try {
+
+        const bytes =
+            base64ToBytes(
+                base64
+            );
+
+
+        packets[packetId] =
+            bytes;
+
+
+        receivedIds.add(
+            packetId
+        );
+
+
+        updateProgress();
+
+
+    }
+    catch(error) {
+
+        console.error(
+            "Packet decode error:",
+            error
+        );
+    }
+}
+
+
+/*
+=========================================================
+PROGRESS
+=========================================================
+*/
+
+function updateProgress() {
+
+    const received =
+        receivedIds.size;
+
+
+    const percentage =
+        (
+            received /
+            totalPackets
+        ) *
+        100;
+
+
+    receivedElement.textContent =
+        received.toLocaleString();
+
+
+    percentageElement.textContent =
+        percentage.toFixed(1) +
+        "%";
+
+
+    progressBar.style.width =
+        percentage + "%";
+
+
+    updateMissingList();
+
+
+    if (
+        received ===
+        totalPackets
+    ) {
+
+        status.className =
+            "status success";
+
+
+        status.textContent =
+            "✓ 100% COMPLETE\n\n" +
+            "All packets have been received.\n" +
+            "The file can now be downloaded.";
+
+
+        downloadButton.disabled =
+            false;
+
+
+        missingList.value =
+            "NONE — all packets received.";
+
+    }
+    else {
+
+        status.className =
+            "status";
+
+
+        status.textContent =
+            "Receiving...\n\n" +
+            received.toLocaleString() +
+            " / " +
+            totalPackets.toLocaleString() +
+            " packets received.";
+
+        downloadButton.disabled =
+            true;
+    }
+}
+
+
+/*
+=========================================================
+MISSING PACKETS
+=========================================================
+*/
+
+function updateMissingList() {
+
+    if (
+        totalPackets <= 0
+    ) {
+
+        missingList.value =
+            "";
+
+        return;
+    }
+
+
+    const missing = [];
+
+
+    for (
+        let i = 0;
+        i < totalPackets;
+        i++
+    ) {
+
+        if (
+            !receivedIds.has(i)
+        ) {
+
+            missing.push(i);
+        }
+    }
+
+
+    /*
+     * Convert individual numbers into
+     * compact ranges.
+
+     * Example:
+
+       1,2,3,4,7,8,10
+
+       becomes:
+
+       1-4,7-8,10
+    */
+
+    missingList.value =
+        compressRanges(
+            missing
+        );
+}
+
+
+/*
+=========================================================
+COMPRESS RANGES
+=========================================================
+*/
+
+function compressRanges(
+    numbers
+) {
+
+    if (
+        numbers.length === 0
+    ) {
+
+        return "";
+    }
+
+
+    const ranges = [];
+
+    let start =
+        numbers[0];
+
+    let previous =
+        numbers[0];
+
+
+    for (
+        let i = 1;
+        i < numbers.length;
+        i++
+    ) {
+
+        const current =
+            numbers[i];
+
+
+        if (
+            current ===
+            previous + 1
+        ) {
+
+            previous =
+                current;
+
+        }
+        else {
+
+            if (
+                start ===
+                previous
+            ) {
+
+                ranges.push(
+                    String(start)
+                );
+
+            }
+            else {
+
+                ranges.push(
+                    start +
+                    "-" +
+                    previous
+                );
+            }
+
+
+            start =
+                current;
+
+            previous =
+                current;
+        }
+    }
+
+
+    if (
+        start ===
+        previous
+    ) {
+
+        ranges.push(
+            String(start)
+        );
+
+    }
+    else {
+
+        ranges.push(
+            start +
+            "-" +
+            previous
+        );
+    }
+
+
+    return ranges.join(
+        ","
+    );
+}
+
+
+/*
+=========================================================
+COPY MISSING LIST
+=========================================================
+*/
+
+copyMissingButton.addEventListener(
+    "click",
+    async function() {
+
+        const text =
+            missingList.value;
+
+
+        if (!text) {
+            return;
+        }
+
+
+        try {
+
+            await navigator.clipboard.writeText(
+                text
+            );
+
+
+            status.textContent =
+                "Missing packet list copied.";
+
+        }
+        catch(error) {
+
+            /*
+             * Clipboard permission may not
+             * be available in some browsers.
+
+             * The list is still visible and
+             * can be selected manually.
+             */
+
+            missingList.focus();
+
+            missingList.select();
+        }
+    }
+);
+
+
+/*
+=========================================================
+DOWNLOAD
+=========================================================
+*/
+
+downloadButton.addEventListener(
+    "click",
+    downloadFile
+);
+
+
+function downloadFile() {
+
+    if (
+        receivedIds.size !==
+        totalPackets
+    ) {
+
+        alert(
+            "The file is not complete yet."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        /*
+         * Reassemble packets IN PACKET ID ORDER.
+
+         * This is critical.
+         */
+
+        const blobParts = [];
+
+
+        for (
+            let i = 0;
+            i < totalPackets;
+            i++
+        ) {
+
+            if (
+                !packets[i]
+            ) {
+
+                alert(
+                    "Packet " +
+                    i +
+                    " is missing."
+                );
+
+                return;
+            }
+
+
+            blobParts.push(
+                packets[i]
+            );
+        }
+
+
+        const blob =
+            new Blob(
+                blobParts,
+                {
+                    type:
+                        "application/octet-stream"
+                }
+            );
+
+
+        /*
+         * Optional safety check.
+         */
+
+        if (
+            expectedFileSize > 0 &&
+            blob.size !==
+            expectedFileSize
+        ) {
+
+            alert(
+                "File size verification failed.\n\n" +
+                "Expected: " +
+                expectedFileSize +
+                " bytes\n" +
+                "Received: " +
+                blob.size +
+                " bytes"
+            );
+
+            return;
+        }
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+        link.download =
+            filename ||
+            "received-file";
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        setTimeout(
+            () => {
+                URL.revokeObjectURL(
+                    url
+                );
+            },
+            1000
+        );
+
+
+        status.className =
+            "status success";
+
+
+        status.textContent =
+            "✓ File download started.\n\n" +
+            filename;
+
+    }
+    catch(error) {
+
+        console.error(
+            error
+        );
+
+
+        status.className =
+            "status error";
+
+
+        status.textContent =
+            "Could not create the downloaded file.";
+    }
+}
+
+
+/*
+=========================================================
+BASE64 → BYTES
+=========================================================
+*/
 
 function base64ToBytes(
     base64
@@ -2105,98 +1665,16 @@ function base64ToBytes(
 }
 
 
-/* =====================================================
-   STATUS
-===================================================== */
+/*
+=========================================================
+CLEANUP
+=========================================================
+*/
 
-function setStatus(
-    message
-) {
-
-    statusElement.className =
-        "status";
-
-    statusElement.textContent =
-        message;
-}
-
-
-function showError(
-    message
-) {
-
-    statusElement.className =
-        "status error";
-
-    statusElement.textContent =
-        "❌ " + message;
-
-    console.error(
-        message
-    );
-}
-
-
-/* =====================================================
-   FILE SIZE
-===================================================== */
-
-function formatBytes(
-    bytes
-) {
-
-    if (
-        bytes === 0
-    ) {
-
-        return "0 B";
-    }
-
-
-    if (
-        bytes < 1024
-    ) {
-
-        return bytes + " B";
-    }
-
-
-    if (
-        bytes <
-        1024 * 1024
-    ) {
-
-        return (
-            bytes / 1024
-        ).toFixed(1) +
-        " KB";
-    }
-
-
-    if (
-        bytes <
-        1024 *
-        1024 *
-        1024
-    ) {
-
-        return (
-            bytes /
-            1024 /
-            1024
-        ).toFixed(2) +
-        " MB";
-    }
-
-
-    return (
-        bytes /
-        1024 /
-        1024 /
-        1024
-    ).toFixed(2) +
-    " GB";
-}
+window.addEventListener(
+    "pagehide",
+    stopCamera
+);
 
 </script>
 
