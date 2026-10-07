@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Camera Test</title>
+</head>
+
+<body style="background:#111;color:white;font-family:sans-serif">
+
+<h2>Camera Test</h2>
+
+<video
+  id="video"
+  autoplay
+  playsinline
+  muted
+  style="width:100%;max-width:600px">
+</video>
+
+<p id="status">Starting...</p>
+
+<script>
+const video = document.getElementById("video");
+const status = document.getElementById("status");
+
+async function start() {
+    try {
+        status.textContent = "Requesting camera...";
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            });
+
+        video.srcObject = stream;
+
+        status.textContent =
+            "Camera started successfully.";
+    }
+    catch (e) {
+        status.textContent =
+            e.name + " - " + e.message;
+
+        console.error(e);
+    }
+}
+
+start();
+</script>
+
+</body>
+</html>
