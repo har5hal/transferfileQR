@@ -2,14 +2,11 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 
 <meta
     name="viewport"
-    content="width=device-width,
-             initial-scale=1.0,
-             viewport-fit=cover">
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <title>Offline QR File Receiver</title>
 
@@ -23,273 +20,120 @@ html,
 body {
     margin: 0;
     padding: 0;
-
     width: 100%;
     min-height: 100%;
-
-    background: #08111f;
-    color: #f8fafc;
-
-    font-family: Arial, sans-serif;
 }
 
 body {
+    background: #08111f;
+    color: #f8fafc;
+    font-family: Arial, sans-serif;
     overflow-x: hidden;
 }
 
 .app {
     width: min(900px, 100%);
     margin: 0 auto;
-
     padding:
         max(12px, env(safe-area-inset-top))
-        14px
+        12px
         max(20px, env(safe-area-inset-bottom));
 }
 
 .card {
     background: #111c2e;
-
     border: 1px solid #263750;
-
     border-radius: 18px;
-
     padding: 18px;
-
-    width: 100%;
 }
 
 h1 {
     margin: 0;
-
     text-align: center;
-
     font-size: clamp(22px, 6vw, 32px);
 }
 
 .subtitle {
     margin: 8px 0 18px;
-
     text-align: center;
-
     color: #94a3b8;
-
     font-size: 14px;
 }
 
-
-/* =====================================================
-   CAMERA
-===================================================== */
-
 .camera-section {
     width: 100%;
-
     display: flex;
     flex-direction: column;
-
     align-items: center;
 }
 
-
-/*
- * IMPORTANT:
- *
- * The camera is constrained by WIDTH rather than
- * using 100vh. This prevents the bottom of the
- * camera from being pushed outside the screen.
- */
-
 .camera-box {
     position: relative;
-
     width: min(720px, 100%);
-
-    /*
-     * Standard camera aspect ratio.
-     */
-
     aspect-ratio: 4 / 3;
-
     background: #000;
-
     border-radius: 14px;
-
     overflow: hidden;
-
     border: 2px solid #334155;
-
-    flex-shrink: 0;
 }
-
-
-/*
- * Video must fill the camera box.
- */
 
 #video {
     position: absolute;
-
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     display: block;
-
-    /*
-     * Keeps the rear camera image filling
-     * the complete preview.
-     */
-
     object-fit: cover;
-
     background: #000;
-
-    /*
-     * Important for iPhone Safari.
-     */
-
-    -webkit-transform: translateZ(0);
 }
-
-
-/*
- * Hidden canvas used for QR decoding.
- */
 
 #canvas {
     display: none;
 }
 
-
-/*
- * Scan guide.
- */
-
 .scan-guide {
     position: absolute;
-
     left: 50%;
     top: 50%;
-
-    width: 65%;
+    width: 62%;
     aspect-ratio: 1;
-
-    transform: translate(
-        -50%,
-        -50%
-    );
-
-    border: 3px solid
-        rgba(34, 197, 94, .9);
-
+    transform: translate(-50%, -50%);
+    border: 3px solid rgba(34, 197, 94, 0.9);
     border-radius: 14px;
-
     pointer-events: none;
-
-    box-shadow:
-        0 0 0 9999px
-        rgba(0, 0, 0, .25);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
 }
-
-
-/*
- * Four small corner indicators.
- */
-
-.scan-guide::before,
-.scan-guide::after {
-    content: "";
-
-    position: absolute;
-
-    width: 28px;
-    height: 28px;
-
-    border-color: #22c55e;
-
-    border-style: solid;
-}
-
-.scan-guide::before {
-
-    left: -3px;
-    top: -3px;
-
-    border-width:
-        5px 0 0 5px;
-}
-
-.scan-guide::after {
-
-    right: -3px;
-    bottom: -3px;
-
-    border-width:
-        0 5px 5px 0;
-}
-
-
-/*
- * Camera message overlay.
- */
 
 .camera-message {
     position: absolute;
-
     left: 10px;
     right: 10px;
     bottom: 10px;
-
     padding: 9px;
-
     border-radius: 8px;
-
-    background:
-        rgba(0, 0, 0, .65);
-
+    background: rgba(0, 0, 0, 0.65);
     color: white;
-
     text-align: center;
-
     font-size: 13px;
-
     pointer-events: none;
 }
 
-
-/* =====================================================
-   BUTTONS
-===================================================== */
-
 .controls {
     display: flex;
-
     flex-wrap: wrap;
-
     justify-content: center;
-
     gap: 8px;
-
     margin-top: 14px;
 }
 
 button {
     border: 0;
-
     border-radius: 8px;
-
     padding: 12px 18px;
-
     background: #2563eb;
-
     color: white;
-
     font-size: 15px;
-
     font-weight: bold;
-
     cursor: pointer;
 }
 
@@ -301,51 +145,37 @@ button.secondary {
     background: #475569;
 }
 
-button:disabled {
-    opacity: .45;
+button.download {
+    background: #16a34a;
+}
 
+button:disabled {
+    opacity: 0.45;
     cursor: not-allowed;
 }
 
-
-/* =====================================================
-   STATUS
-===================================================== */
-
 .status {
     margin-top: 14px;
-
     padding: 12px;
-
     background: #0b1525;
-
     border-radius: 8px;
-
     text-align: center;
-
     color: #cbd5e1;
-
     line-height: 1.45;
-
     white-space: pre-wrap;
 }
 
-.success {
+.status.success {
     color: #4ade80;
 }
 
-.error {
+.status.error {
     color: #f87171;
 }
 
-.warning {
+.status.warning {
     color: #fbbf24;
 }
-
-
-/* =====================================================
-   PROGRESS
-===================================================== */
 
 .progress-container {
     margin-top: 14px;
@@ -353,179 +183,103 @@ button:disabled {
 
 .progress {
     width: 100%;
-
     height: 20px;
-
     background: #334155;
-
     border-radius: 20px;
-
     overflow: hidden;
 }
 
 #progressBar {
     width: 0%;
-
     height: 100%;
-
     background: #22c55e;
-
-    transition:
-        width .15s linear;
+    transition: width 0.15s linear;
 }
 
 .progress-text {
     margin-top: 7px;
-
     text-align: center;
-
     font-weight: bold;
 }
 
-
-/* =====================================================
-   FILE INFORMATION
-===================================================== */
-
 .info {
     margin-top: 14px;
-
     display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
 }
 
 .info-box {
     min-width: 0;
-
     background: #0b1525;
-
     padding: 10px;
-
     border-radius: 8px;
-
     text-align: center;
 }
 
 .value {
     display: block;
-
     font-weight: bold;
-
     overflow-wrap: anywhere;
 }
 
 .label {
     display: block;
-
     margin-top: 4px;
-
     color: #94a3b8;
-
     font-size: 12px;
 }
 
-
-/* =====================================================
-   MISSING PACKETS
-===================================================== */
-
 .missing-box {
     margin-top: 14px;
-
     padding: 14px;
-
     background: #0b1525;
-
     border-radius: 10px;
 }
 
 .missing-title {
     font-weight: bold;
-
     margin-bottom: 8px;
 }
 
 #missingPackets {
     width: 100%;
-
     min-height: 90px;
-
     resize: vertical;
-
     padding: 10px;
-
     background: #111c2e;
-
     color: white;
-
     border: 1px solid #334155;
-
     border-radius: 8px;
-
     font-family: monospace;
-
     font-size: 13px;
 }
 
-
-/* =====================================================
-   DOWNLOAD
-===================================================== */
-
 .download-area {
     margin-top: 15px;
-
     text-align: center;
 }
 
 #downloadButton {
     background: #16a34a;
-
     font-size: 16px;
-
     padding: 14px 25px;
 }
 
-
-/* =====================================================
-   SMALL SCREENS
-===================================================== */
-
-@media(max-width: 600px) {
-
-    .app {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
+@media (max-width: 600px) {
 
     .card {
         padding: 12px;
-
         border-radius: 14px;
     }
 
     .camera-box {
-        /*
-         * 4:3 is intentionally used instead of
-         * forcing the camera to viewport height.
-         */
-
         width: 100%;
-
         aspect-ratio: 4 / 3;
     }
 
-    .scan-guide {
-        width: 62%;
-    }
-
     .info {
-        grid-template-columns:
-            1fr;
+        grid-template-columns: 1fr;
     }
 
     button {
@@ -533,24 +287,10 @@ button:disabled {
     }
 }
 
-
-/*
- * Very short screens.
-
- * This prevents the camera from becoming
- * unnecessarily tall on landscape/short displays.
- */
-
-@media(
-    max-height: 600px
-) {
+@media (max-height: 600px) {
 
     .camera-box {
-        width: min(
-            65vh,
-            720px
-        );
-
+        width: min(65vh, 720px);
         aspect-ratio: 4 / 3;
     }
 
@@ -560,9 +300,7 @@ button:disabled {
 }
 
 </style>
-
 </head>
-
 
 <body>
 
@@ -570,18 +308,11 @@ button:disabled {
 
 <div class="card">
 
-<h1>
-📥 Offline QR File Receiver
-</h1>
+<h1>📥 Offline QR File Receiver</h1>
 
 <p class="subtitle">
 Scan QR packets to reconstruct the file
 </p>
-
-
-<!-- =====================================================
-     CAMERA
-====================================================== -->
 
 <div class="camera-section">
 
@@ -594,89 +325,56 @@ Scan QR packets to reconstruct the file
     muted>
 </video>
 
-<canvas
-    id="canvas">
-</canvas>
+<canvas id="canvas"></canvas>
 
-<div
-    class="scan-guide">
-</div>
+<div class="scan-guide"></div>
 
 <div
     id="cameraMessage"
     class="camera-message">
-
 Camera stopped
-
 </div>
 
 </div>
-
 
 <div class="controls">
 
-<button
-    id="startButton">
-
+<button id="startButton">
 Start Camera
-
 </button>
 
 <button
     id="stopButton"
     class="stop"
     disabled>
-
 Stop Camera
-
 </button>
 
 </div>
 
 </div>
 
-
-<!-- =====================================================
-     STATUS
-====================================================== -->
-
 <div
     id="status"
     class="status">
-
 Press Start Camera.
-
 </div>
-
-
-<!-- =====================================================
-     PROGRESS
-====================================================== -->
 
 <div class="progress-container">
 
 <div class="progress">
 
-<div
-    id="progressBar">
-</div>
+<div id="progressBar"></div>
 
 </div>
 
 <div
     id="progressText"
     class="progress-text">
-
 0%
-
 </div>
 
 </div>
-
-
-<!-- =====================================================
-     FILE INFO
-====================================================== -->
 
 <div class="info">
 
@@ -685,9 +383,7 @@ Press Start Camera.
 <span
     id="fileName"
     class="value">
-
 —
-
 </span>
 
 <span class="label">
@@ -696,15 +392,12 @@ File
 
 </div>
 
-
 <div class="info-box">
 
 <span
     id="receivedCount"
     class="value">
-
 0
-
 </span>
 
 <span class="label">
@@ -713,15 +406,12 @@ Packets Received
 
 </div>
 
-
 <div class="info-box">
 
 <span
     id="totalCount"
     class="value">
-
 —
-
 </span>
 
 <span class="label">
@@ -732,7 +422,6 @@ Total Packets
 
 </div>
 
-
 <div class="info">
 
 <div class="info-box">
@@ -740,9 +429,7 @@ Total Packets
 <span
     id="transferId"
     class="value">
-
 —
-
 </span>
 
 <span class="label">
@@ -751,15 +438,12 @@ Transfer ID
 
 </div>
 
-
 <div class="info-box">
 
 <span
     id="missingCount"
     class="value">
-
 —
-
 </span>
 
 <span class="label">
@@ -768,15 +452,12 @@ Missing
 
 </div>
 
-
 <div class="info-box">
 
 <span
     id="fileSize"
     class="value">
-
 —
-
 </span>
 
 <span class="label">
@@ -787,25 +468,16 @@ File Size
 
 </div>
 
-
-<!-- =====================================================
-     MISSING PACKETS
-====================================================== -->
-
 <div class="missing-box">
 
 <div class="missing-title">
-
 Missing Packet IDs
-
 </div>
 
 <textarea
     id="missingPackets"
     readonly
-    placeholder="Missing packets will appear here...">
-</textarea>
-
+    placeholder="Missing packets will appear here..."></textarea>
 
 <div class="controls">
 
@@ -813,165 +485,85 @@ Missing Packet IDs
     id="copyMissingButton"
     class="secondary"
     disabled>
-
 Copy Missing IDs
-
 </button>
 
 </div>
 
 </div>
-
-
-<!-- =====================================================
-     DOWNLOAD
-====================================================== -->
 
 <div class="download-area">
 
 <button
     id="downloadButton"
+    class="download"
     disabled>
-
 Download File
-
 </button>
 
 </div>
 
-
 </div>
 
 </div>
-
 
 <script>
 
-/*
-============================================================
-OFFLINE QR RECEIVER
-============================================================
-
-This receiver:
-
-- Uses the device camera locally.
-- Does not upload camera frames.
-- Does not use a server.
-- Does not use Bluetooth.
-- Does not use Wi-Fi.
-- Reconstructs the file from QR packets.
-
-The camera UI is deliberately constrained by width/aspect
-ratio instead of 100vh so that it does not get cut off on
-mobile browsers.
-============================================================
-*/
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
 const video =
-    document.getElementById(
-        "video"
-    );
+    document.getElementById("video");
 
 const canvas =
-    document.getElementById(
-        "canvas"
-    );
+    document.getElementById("canvas");
 
 const startButton =
-    document.getElementById(
-        "startButton"
-    );
+    document.getElementById("startButton");
 
 const stopButton =
-    document.getElementById(
-        "stopButton"
-    );
+    document.getElementById("stopButton");
 
 const status =
-    document.getElementById(
-        "status"
-    );
+    document.getElementById("status");
 
 const cameraMessage =
-    document.getElementById(
-        "cameraMessage"
-    );
+    document.getElementById("cameraMessage");
 
 const progressBar =
-    document.getElementById(
-        "progressBar"
-    );
+    document.getElementById("progressBar");
 
 const progressText =
-    document.getElementById(
-        "progressText"
-    );
+    document.getElementById("progressText");
 
 const fileNameElement =
-    document.getElementById(
-        "fileName"
-    );
+    document.getElementById("fileName");
 
 const receivedCountElement =
-    document.getElementById(
-        "receivedCount"
-    );
+    document.getElementById("receivedCount");
 
 const totalCountElement =
-    document.getElementById(
-        "totalCount"
-    );
+    document.getElementById("totalCount");
 
 const transferIdElement =
-    document.getElementById(
-        "transferId"
-    );
+    document.getElementById("transferId");
 
 const missingCountElement =
-    document.getElementById(
-        "missingCount"
-    );
+    document.getElementById("missingCount");
 
 const fileSizeElement =
-    document.getElementById(
-        "fileSize"
-    );
+    document.getElementById("fileSize");
 
 const missingPacketsElement =
-    document.getElementById(
-        "missingPackets"
-    );
+    document.getElementById("missingPackets");
 
 const copyMissingButton =
-    document.getElementById(
-        "copyMissingButton"
-    );
+    document.getElementById("copyMissingButton");
 
 const downloadButton =
-    document.getElementById(
-        "downloadButton"
-    );
+    document.getElementById("downloadButton");
 
-
-/* =========================================================
-   CAMERA
-========================================================= */
 
 let stream = null;
-
 let scanning = false;
-
 let animationFrame = null;
-
-
-/*
- * Offscreen canvas context.
- */
 
 const ctx =
     canvas.getContext(
@@ -982,33 +574,16 @@ const ctx =
     );
 
 
-/* =========================================================
-   TRANSFER STATE
-========================================================= */
-
 let activeTransferId = null;
-
 let totalPackets = 0;
-
 let expectedFileSize = 0;
-
 let expectedFileName = "";
 
 let packets = new Map();
-
 let packetChecksums = new Map();
-
-
-/*
- * File information from the sender.
- */
 
 let fileReady = false;
 
-
-/* =========================================================
-   START CAMERA
-========================================================= */
 
 startButton.addEventListener(
     "click",
@@ -1018,32 +593,26 @@ startButton.addEventListener(
 
 async function startCamera() {
 
-    /*
-     * Stop any previous stream first.
-     */
-
     stopCamera();
 
-
-    status.className =
-        "status";
-
+    status.className = "status";
 
     status.textContent =
         "Starting rear camera...";
 
-
     cameraMessage.textContent =
         "Starting camera...";
 
-
     try {
 
-        /*
-         * First attempt:
-         *
-         * environment = rear camera.
-         */
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
+            throw new Error(
+                "Camera API is not available. Use HTTPS and a supported browser."
+            );
+        }
 
         stream =
             await navigator.mediaDevices.getUserMedia(
@@ -1052,68 +621,48 @@ async function startCamera() {
                         facingMode: {
                             ideal: "environment"
                         },
-
                         width: {
                             ideal: 1280
                         },
-
                         height: {
                             ideal: 720
                         }
                     },
-
                     audio: false
                 }
             );
 
-
         video.srcObject =
             stream;
 
-
         await video.play();
-
 
         scanning = true;
 
-
-        startButton.disabled =
-            true;
-
-
-        stopButton.disabled =
-            false;
-
+        startButton.disabled = true;
+        stopButton.disabled = false;
 
         cameraMessage.textContent =
             "Point the rear camera at the QR code";
 
-
         status.className =
             "status";
-
 
         status.textContent =
             "Camera ready. Scan the QR packets.";
 
-
         scanLoop();
 
     }
-    catch(error) {
+    catch (error) {
 
-        console.error(
-            error
-        );
-
+        console.error(error);
 
         cameraMessage.textContent =
             "Camera error";
 
-
         status.className =
             "status error";
-
 
         status.textContent =
             "Camera access failed: " +
@@ -1121,20 +670,11 @@ async function startCamera() {
             " - " +
             error.message;
 
-
-        startButton.disabled =
-            false;
-
-
-        stopButton.disabled =
-            true;
+        startButton.disabled = false;
+        stopButton.disabled = true;
     }
 }
 
-
-/* =========================================================
-   STOP CAMERA
-========================================================= */
 
 stopButton.addEventListener(
     "click",
@@ -1146,7 +686,6 @@ function stopCamera() {
 
     scanning = false;
 
-
     if (animationFrame) {
 
         cancelAnimationFrame(
@@ -1156,67 +695,43 @@ function stopCamera() {
         animationFrame = null;
     }
 
-
     if (stream) {
 
-        stream
-            .getTracks()
-            .forEach(
-                track => {
-                    track.stop();
-                }
-            );
-
+        stream.getTracks().forEach(
+            function(track) {
+                track.stop();
+            }
+        );
 
         stream = null;
     }
 
-
-    video.srcObject =
-        null;
-
+    video.srcObject = null;
 
     cameraMessage.textContent =
         "Camera stopped";
 
-
-    startButton.disabled =
-        false;
-
-
-    stopButton.disabled =
-        true;
+    startButton.disabled = false;
+    stopButton.disabled = true;
 }
 
-
-/* =========================================================
-   SCAN LOOP
-========================================================= */
 
 function scanLoop() {
 
     if (!scanning) {
-
         return;
     }
-
 
     if (
         video.readyState >=
         HTMLMediaElement.HAVE_ENOUGH_DATA
     ) {
 
-        /*
-         * Match canvas to actual video frame.
-         */
-
         const width =
             video.videoWidth;
 
-
         const height =
             video.videoHeight;
-
 
         if (
             width > 0 &&
@@ -1229,7 +744,6 @@ function scanLoop() {
             canvas.height =
                 height;
 
-
             ctx.drawImage(
                 video,
                 0,
@@ -1238,7 +752,6 @@ function scanLoop() {
                 height
             );
 
-
             const imageData =
                 ctx.getImageData(
                     0,
@@ -1246,16 +759,6 @@ function scanLoop() {
                     width,
                     height
                 );
-
-
-            /*
-             * jsQR must be included in the same
-             * folder as this receiver.
-
-             * Example:
-             *
-             * <script src="./jsQR.js"></script>
-             */
 
             if (
                 typeof jsQR ===
@@ -1273,7 +776,6 @@ function scanLoop() {
                         }
                     );
 
-
                 if (
                     code &&
                     code.data
@@ -1287,7 +789,6 @@ function scanLoop() {
         }
     }
 
-
     animationFrame =
         requestAnimationFrame(
             scanLoop
@@ -1295,123 +796,73 @@ function scanLoop() {
 }
 
 
-/* =========================================================
-   PROCESS QR
-========================================================= */
-
-function processQR(
-    text
-) {
-
-    /*
-     * Sender protocol:
-
-       QRF4|
-       transferId|
-       packetId|
-       totalPackets|
-       fileSize|
-       filename|
-       payloadSize|
-       checksum|
-       base64
-    */
+function processQR(text) {
 
     const parts =
         text.split("|");
 
-
     if (
         parts.length < 9
     ) {
-
         return;
     }
-
 
     if (
-        parts[0] !==
-        "QRF4"
+        parts[0] !== "QRF4"
     ) {
-
         return;
     }
-
 
     const incomingTransferId =
         parts[1];
 
-
     const packetId =
-        Number(
-            parts[2]
-        );
-
+        Number(parts[2]);
 
     const incomingTotal =
-        Number(
-            parts[3]
-        );
-
+        Number(parts[3]);
 
     const incomingFileSize =
-        Number(
-            parts[4]
-        );
+        Number(parts[4]);
 
+    let incomingFileName;
 
-    const incomingFileName =
-        decodeURIComponent(
-            parts[5]
-        );
+    try {
 
+        incomingFileName =
+            decodeURIComponent(
+                parts[5]
+            );
+
+    }
+    catch(error) {
+
+        return;
+    }
 
     const payloadSize =
-        Number(
-            parts[6]
-        );
-
+        Number(parts[6]);
 
     const checksum =
         parts[7];
 
-
     const base64 =
-        parts.slice(
-            8
-        ).join("|");
-
-
-    /*
-     * Validate packet metadata.
-     */
+        parts.slice(8).join("|");
 
     if (
-        !Number.isInteger(
-            packetId
-        ) ||
-        !Number.isInteger(
-            incomingTotal
-        ) ||
+        !Number.isInteger(packetId) ||
+        !Number.isInteger(incomingTotal) ||
         packetId < 0 ||
         packetId >= incomingTotal
     ) {
-
         return;
     }
-
 
     if (
         incomingTotal <= 0
     ) {
-
         return;
     }
-
-
-    /*
-     * New transfer.
-     */
 
     if (
         activeTransferId === null
@@ -1425,55 +876,27 @@ function processQR(
         );
     }
 
-
-    /*
-     * Ignore packets from a different
-     * transfer.
-
-     * This is important if another QR
-     * transfer is nearby.
-     */
-
     if (
         incomingTransferId !==
         activeTransferId
     ) {
-
         return;
     }
-
-
-    /*
-     * Ignore inconsistent metadata.
-     */
 
     if (
         incomingTotal !==
         totalPackets
     ) {
-
         return;
     }
-
-
-    /*
-     * Already received?
-
-     * No need to decode it again.
-     */
 
     if (
-        packets.has(
-            packetId
-        )
+        packets.has(packetId)
     ) {
-
         return;
     }
 
-
     let bytes;
-
 
     try {
 
@@ -1488,67 +911,33 @@ function processQR(
         return;
     }
 
-
-    /*
-     * Validate payload length.
-     */
-
     if (
         bytes.length !==
         payloadSize
     ) {
-
         return;
     }
-
-
-    /*
-     * Validate checksum.
-
-     * This prevents a bad camera decode from
-     * being stored as a valid packet.
-     */
 
     const calculated =
-        crc32(
-            bytes
-        );
-
+        crc32(bytes);
 
     if (
-        calculated !==
-        checksum
+        calculated !== checksum
     ) {
-
         return;
     }
-
-
-    /*
-     * Store packet.
-
-     * Packet ID is the identity of the
-     * packet, not a separate file.
-     */
 
     packets.set(
         packetId,
         bytes
     );
 
-
     packetChecksums.set(
         packetId,
         checksum
     );
 
-
     updateProgress();
-
-
-    /*
-     * If complete, enable download.
-     */
 
     if (
         packets.size ===
@@ -1560,10 +949,6 @@ function processQR(
 }
 
 
-/* =========================================================
-   BEGIN TRANSFER
-========================================================= */
-
 function beginTransfer(
     id,
     total,
@@ -1571,75 +956,51 @@ function beginTransfer(
     name
 ) {
 
-    activeTransferId =
-        id;
+    activeTransferId = id;
 
-    totalPackets =
-        total;
+    totalPackets = total;
 
-    expectedFileSize =
-        size;
+    expectedFileSize = size;
 
-    expectedFileName =
-        name;
+    expectedFileName = name;
 
+    packets = new Map();
 
-    packets =
-        new Map();
-
-
-    packetChecksums =
-        new Map();
-
+    packetChecksums = new Map();
 
     fileReady = false;
-
 
     fileNameElement.textContent =
         name;
 
-
     totalCountElement.textContent =
         total.toLocaleString();
-
 
     transferIdElement.textContent =
         id;
 
-
     fileSizeElement.textContent =
-        formatBytes(
-            size
-        );
-
+        formatBytes(size);
 
     downloadButton.disabled =
         true;
 
-
     status.className =
         "status";
-
 
     status.textContent =
         "Receiving transfer " +
         id +
         "...";
 
-
     updateProgress();
 }
 
-
-/* =========================================================
-   UPDATE PROGRESS
-========================================================= */
 
 function updateProgress() {
 
     const received =
         packets.size;
-
 
     const percentage =
         totalPackets > 0
@@ -1649,7 +1010,6 @@ function updateProgress() {
             ) * 100
             : 0;
 
-
     const missing =
         Math.max(
             0,
@@ -1657,39 +1017,25 @@ function updateProgress() {
             received
         );
 
-
     receivedCountElement.textContent =
         received.toLocaleString();
-
 
     missingCountElement.textContent =
         missing.toLocaleString();
 
-
     progressBar.style.width =
-        percentage +
-        "%";
-
+        percentage + "%";
 
     progressText.textContent =
         Math.floor(
             percentage
-        ) +
-        "%";
-
-
-    /*
-     * Update missing IDs.
-
-     * These are PACKET IDs, not files.
-     */
+        ) + "%";
 
     if (
         totalPackets > 0
     ) {
 
         const missingIds = [];
-
 
         for (
             let i = 0;
@@ -1701,18 +1047,14 @@ function updateProgress() {
                 !packets.has(i)
             ) {
 
-                missingIds.push(
-                    i
-                );
+                missingIds.push(i);
             }
         }
-
 
         missingPacketsElement.value =
             compressRanges(
                 missingIds
             );
-
 
         copyMissingButton.disabled =
             missingIds.length === 0;
@@ -1720,15 +1062,7 @@ function updateProgress() {
 }
 
 
-/* =========================================================
-   COMPLETE TRANSFER
-========================================================= */
-
 function completeTransfer() {
-
-    /*
-     * Verify all packet IDs exist.
-     */
 
     for (
         let i = 0;
@@ -1739,57 +1073,41 @@ function completeTransfer() {
         if (
             !packets.has(i)
         ) {
-
             return;
         }
     }
 
-
     fileReady = true;
-
 
     progressBar.style.width =
         "100%";
 
-
     progressText.textContent =
         "100%";
-
 
     missingCountElement.textContent =
         "0";
 
-
     missingPacketsElement.value =
         "";
-
 
     copyMissingButton.disabled =
         true;
 
-
     downloadButton.disabled =
         false;
-
 
     status.className =
         "status success";
 
-
     status.textContent =
-        "✓ Transfer complete.\n\n" +
-
+        "Transfer complete.\n\n" +
         "All " +
         totalPackets +
         " packets received.\n\n" +
-
         "The file is ready to download.";
 }
 
-
-/* =========================================================
-   DOWNLOAD
-========================================================= */
 
 downloadButton.addEventListener(
     "click",
@@ -1800,14 +1118,10 @@ downloadButton.addEventListener(
 function downloadFile() {
 
     if (!fileReady) {
-
         return;
     }
 
-
-    const ordered =
-        [];
-
+    const ordered = [];
 
     for (
         let i = 0;
@@ -1820,7 +1134,6 @@ function downloadFile() {
         );
     }
 
-
     const blob =
         new Blob(
             ordered,
@@ -1830,58 +1143,42 @@ function downloadFile() {
             }
         );
 
-
     const url =
         URL.createObjectURL(
             blob
         );
-
 
     const link =
         document.createElement(
             "a"
         );
 
-
-    link.href =
-        url;
-
+    link.href = url;
 
     link.download =
         expectedFileName ||
         "received-file";
 
-
     document.body.appendChild(
         link
     );
 
-
     link.click();
-
 
     link.remove();
 
-
-    /*
-     * Release temporary browser URL
-     * after the download has been initiated.
-     */
-
     setTimeout(
-        () => {
+        function() {
+
             URL.revokeObjectURL(
                 url
             );
+
         },
         1000
     );
 }
 
-
-/* =========================================================
-   COPY MISSING PACKETS
-========================================================= */
 
 copyMissingButton.addEventListener(
     "click",
@@ -1890,12 +1187,9 @@ copyMissingButton.addEventListener(
         const value =
             missingPacketsElement.value;
 
-
         if (!value) {
-
             return;
         }
-
 
         try {
 
@@ -1903,20 +1197,11 @@ copyMissingButton.addEventListener(
                 value
             );
 
-
             status.textContent =
                 "Missing packet IDs copied.";
 
         }
         catch(error) {
-
-            /*
-             * Clipboard APIs can be restricted
-             * on some mobile browsers.
-
-             * Selecting the textarea still lets
-             * the user copy it manually.
-             */
 
             missingPacketsElement.focus();
 
@@ -1926,25 +1211,15 @@ copyMissingButton.addEventListener(
 );
 
 
-/* =========================================================
-   BASE64 → BYTES
-========================================================= */
-
-function base64ToBytes(
-    base64
-) {
+function base64ToBytes(base64) {
 
     const binary =
-        atob(
-            base64
-        );
-
+        atob(base64);
 
     const bytes =
         new Uint8Array(
             binary.length
         );
-
 
     for (
         let i = 0;
@@ -1956,22 +1231,14 @@ function base64ToBytes(
             binary.charCodeAt(i);
     }
 
-
     return bytes;
 }
 
 
-/* =========================================================
-   CRC32
-========================================================= */
-
-function crc32(
-    bytes
-) {
+function crc32(bytes) {
 
     let crc =
         0xFFFFFFFF;
-
 
     for (
         let i = 0;
@@ -1982,7 +1249,6 @@ function crc32(
         crc ^=
             bytes[i];
 
-
         for (
             let j = 0;
             j < 8;
@@ -1991,7 +1257,6 @@ function crc32(
 
             const mask =
                 -(crc & 1);
-
 
             crc =
                 (
@@ -2004,47 +1269,25 @@ function crc32(
         }
     }
 
-
     return (
         (
             crc ^
             0xFFFFFFFF
-        )
-        >>> 0
+        ) >>> 0
     )
         .toString(16)
         .toUpperCase()
-        .padStart(
-            8,
-            "0"
-        );
+        .padStart(8, "0");
 }
 
 
-/* =========================================================
-   COMPRESS MISSING IDS
-=========================================================
-
-Example:
-
-[1,2,3,7,8,12]
-
-becomes:
-
-1-3,7-8,12
-========================================================= */
-
-function compressRanges(
-    ids
-) {
+function compressRanges(ids) {
 
     if (
         ids.length === 0
     ) {
-
         return "";
     }
-
 
     const ranges = [];
 
@@ -2054,7 +1297,6 @@ function compressRanges(
     let previous =
         ids[0];
 
-
     for (
         let i = 1;
         i < ids.length;
@@ -2063,7 +1305,6 @@ function compressRanges(
 
         const current =
             ids[i];
-
 
         if (
             current ===
@@ -2076,10 +1317,8 @@ function compressRanges(
             continue;
         }
 
-
         if (
-            start ===
-            previous
+            start === previous
         ) {
 
             ranges.push(
@@ -2096,7 +1335,6 @@ function compressRanges(
             );
         }
 
-
         start =
             current;
 
@@ -2104,10 +1342,8 @@ function compressRanges(
             current;
     }
 
-
     if (
-        start ===
-        previous
+        start === previous
     ) {
 
         ranges.push(
@@ -2124,20 +1360,11 @@ function compressRanges(
         );
     }
 
-
-    return ranges.join(
-        ","
-    );
+    return ranges.join(",");
 }
 
 
-/* =========================================================
-   FILE SIZE
-========================================================= */
-
-function formatBytes(
-    bytes
-) {
+function formatBytes(bytes) {
 
     if (
         bytes < 1024
@@ -2149,7 +1376,6 @@ function formatBytes(
         );
     }
 
-
     if (
         bytes <
         1024 * 1024
@@ -2160,7 +1386,6 @@ function formatBytes(
         ).toFixed(1) +
         " KB";
     }
-
 
     if (
         bytes <
@@ -2177,7 +1402,6 @@ function formatBytes(
         " MB";
     }
 
-
     return (
         bytes /
         1024 /
@@ -2188,26 +1412,6 @@ function formatBytes(
 }
 
 </script>
-
-
-<!--
-============================================================
-LOCAL jsQR LIBRARY
-============================================================
-
-Put jsQR.js in the same folder as receiver.html.
-
-Example:
-
-transferQR/
-    sender.html
-    receiver.html
-    qrcode.min.js
-    jsQR.js
-
-Do NOT use a CDN if you want the receiver to remain
-self-contained/offline.
--->
 
 <script src="./jsQR.js"></script>
 
