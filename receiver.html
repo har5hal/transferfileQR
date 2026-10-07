@@ -10,75 +10,108 @@
 <h2>Camera Test</h2>
 
 <video
-  id="video"
-  autoplay
-  playsinline
-  muted
-  style="width:100%;max-width:600px">
+    id="video"
+    autoplay
+    playsinline
+    muted
+    style="width:100%; max-width:600px; background:#000;">
 </video>
 
-<p id="status">Starting...</p>
+<div id="status">Starting...</div>
 
 <script>
 const video = document.getElementById("video");
 const status = document.getElementById("status");
 
-// async function start() {
-//     try {
-//         status.textContent = "Requesting camera...";
+function log(message) {
+    console.log(message);
+    status.textContent = message;
+}
 
-//         const stream =
-//             await navigator.mediaDevices.getUserMedia({
-//                 video: true,
-//                 audio: false
-//             });
+async function startCamera() {
 
-//         video.srcObject = stream;
+    log("1. Checking camera API...");
 
-//         status.textContent =
-//             "Camera started successfully.";
-//     }
-//     catch (e) {
-//         status.textContent =
-//             e.name + " - " + e.message;
+    if (!navigator.mediaDevices) {
+        log("ERROR: navigator.mediaDevices is unavailable");
+        return;
+    }
 
-//         console.error(e);
-//     }
-// }
+    if (!navigator.mediaDevices.getUserMedia) {
+        log("ERROR: getUserMedia is unavailable");
+        return;
+    }
 
-// start();
-  async function startCamera() {
+    log("2. Requesting camera...");
+
     try {
-        statusElement.textContent = "Starting camera...";
 
-        // Do NOT specify resolution or facingMode initially.
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false
-        });
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            });
+
+        log("3. Camera stream received");
+
+        console.log("Stream:", stream);
+        console.log("Tracks:", stream.getVideoTracks());
 
         video.srcObject = stream;
 
-        await video.play();
+        log("4. Video source attached");
 
-        statusElement.textContent =
-            "Camera started. Scanning...";
+        video.onloadedmetadata = async () => {
 
-        scanning = true;
-        scanLoop();
+            log(
+                "5. Video metadata loaded: " +
+                video.videoWidth +
+                " × " +
+                video.videoHeight
+            );
 
-    } catch (error) {
-        console.error("Camera error:", error);
+            try {
+                await video.play();
 
-        statusElement.textContent =
-            "Camera access failed: " +
-            error.name +
+                log(
+                    "6. CAMERA WORKING: " +
+                    video.videoWidth +
+                    " × " +
+                    video.videoHeight
+                );
+
+            } catch (e) {
+
+                log(
+                    "PLAY ERROR: " +
+                    e.name +
+                    " - " +
+                    e.message
+                );
+
+                console.error(e);
+            }
+        };
+
+    } catch (e) {
+
+        log(
+            "CAMERA ERROR: " +
+            e.name +
             " - " +
-            error.message;
+            e.message
+        );
+
+        console.error(
+            "getUserMedia error:",
+            e
+        );
     }
 }
+
 startCamera();
 </script>
+
 
 </body>
 </html>
