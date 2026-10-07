@@ -130,6 +130,8 @@ button {
     color: white;
 
     background: #2563eb;
+
+    cursor: pointer;
 }
 
 button.stop {
@@ -252,15 +254,7 @@ button:disabled {
 
 </style>
 
-
-<!--
- IMPORTANT:
- Put jsQR.js beside this HTML file.
-
- receiver.html
- jsQR.js
--->
-
+<!-- jsQR.js must be in the same directory -->
 <script src="./jsQR.js"></script>
 
 </head>
@@ -271,12 +265,10 @@ button:disabled {
 
 <div class="card">
 
-<h1>
-📥 QR File Receiver
-</h1>
+<h1>📥 QR File Receiver</h1>
 
 <div class="subtitle">
-Point the camera at the sender screen
+Point the rear camera at the sender screen
 </div>
 
 
@@ -301,7 +293,7 @@ Point the camera at the sender screen
 <div class="controls">
 
 <button id="startButton">
-📷 Start Camera
+📷 Start Rear Camera
 </button>
 
 <button
@@ -316,12 +308,8 @@ Stop
 
 <!-- STATUS -->
 
-<div
-    id="status"
-    class="status">
-
+<div id="status" class="status">
 Ready.
-
 </div>
 
 
@@ -340,9 +328,7 @@ Ready.
 
 <div class="box">
 
-<span
-    id="fileName"
-    class="value">
+<span id="fileName" class="value">
 —
 </span>
 
@@ -355,9 +341,7 @@ File
 
 <div class="box">
 
-<span
-    id="received"
-    class="value">
+<span id="received" class="value">
 0
 </span>
 
@@ -370,9 +354,7 @@ Received
 
 <div class="box">
 
-<span
-    id="total"
-    class="value">
+<span id="total" class="value">
 —
 </span>
 
@@ -389,9 +371,7 @@ Total
 
 <div class="box">
 
-<span
-    id="fileSize"
-    class="value">
+<span id="fileSize" class="value">
 —
 </span>
 
@@ -404,9 +384,7 @@ Size
 
 <div class="box">
 
-<span
-    id="missing"
-    class="value">
+<span id="missing" class="value">
 —
 </span>
 
@@ -419,9 +397,7 @@ Missing
 
 <div class="box">
 
-<span
-    id="percent"
-    class="value">
+<span id="percent" class="value">
 0%
 </span>
 
@@ -433,7 +409,6 @@ Progress
 
 </div>
 
-
 </div>
 
 </div>
@@ -443,27 +418,16 @@ Progress
 
 /*
 =========================================================
- QR FILE RECEIVER
+QR FILE RECEIVER
 =========================================================
 
 PACKET FORMAT:
 
 QRF1|frame|totalFrames|filename|fileSize|base64Data
 
-Example:
-
-QRF1|0|100|test.zip|50000|UEsDB...
-
-Each QR contains one frame.
-
-The receiver:
-
-1. scans QR
-2. extracts frame
-3. stores frame
-4. tracks progress
-5. rebuilds the original file
-6. downloads the file
+The receiver scans the QR frames, stores them,
+reassembles the original bytes, and downloads
+the resulting file.
 =========================================================
 */
 
@@ -473,63 +437,41 @@ The receiver:
 ===================================================== */
 
 const video =
-    document.getElementById(
-        "video"
-    );
+    document.getElementById("video");
 
 const startButton =
-    document.getElementById(
-        "startButton"
-    );
+    document.getElementById("startButton");
 
 const stopButton =
-    document.getElementById(
-        "stopButton"
-    );
+    document.getElementById("stopButton");
 
 const statusElement =
-    document.getElementById(
-        "status"
-    );
+    document.getElementById("status");
 
 const progressBar =
-    document.getElementById(
-        "progressBar"
-    );
+    document.getElementById("progressBar");
 
 const fileNameElement =
-    document.getElementById(
-        "fileName"
-    );
+    document.getElementById("fileName");
 
 const receivedElement =
-    document.getElementById(
-        "received"
-    );
+    document.getElementById("received");
 
 const totalElement =
-    document.getElementById(
-        "total"
-    );
+    document.getElementById("total");
 
 const fileSizeElement =
-    document.getElementById(
-        "fileSize"
-    );
+    document.getElementById("fileSize");
 
 const missingElement =
-    document.getElementById(
-        "missing"
-    );
+    document.getElementById("missing");
 
 const percentElement =
-    document.getElementById(
-        "percent"
-    );
+    document.getElementById("percent");
 
 
 /* =====================================================
-   CAMERA
+   CAMERA STATE
 ===================================================== */
 
 let stream = null;
@@ -544,9 +486,7 @@ let animationFrame = null;
 ===================================================== */
 
 const canvas =
-    document.createElement(
-        "canvas"
-    );
+    document.createElement("canvas");
 
 const ctx =
     canvas.getContext(
@@ -563,26 +503,7 @@ const ctx =
 
 let transfer = null;
 
-
-/*
- Map:
-
- frame number
-      ↓
- Uint8Array
-*/
-
-const frames =
-    new Map();
-
-
-/*
- Last decoded QR.
-
- Used to prevent processing
- the exact same QR repeatedly
- while it remains on screen.
-*/
+const frames = new Map();
 
 let lastQR = "";
 
@@ -615,8 +536,7 @@ async function startCamera() {
 
 
     if (
-        typeof jsQR ===
-        "undefined"
+        typeof jsQR === "undefined"
     ) {
 
         showError(
@@ -631,39 +551,67 @@ async function startCamera() {
     try {
 
         setStatus(
-            "Starting camera..."
+            "Starting rear camera..."
         );
 
 
         /*
-         IMPORTANT:
-
-         Keep this simple.
-
-         Android Chrome previously
-         returned NotReadableError
-         when another camera tab was open.
-
-         No resolution/facingMode
-         constraints are specified.
-        */
+         * Prefer the rear/environment camera.
+         *
+         * "ideal" is intentional:
+         * it asks Chrome to prefer the rear
+         * camera without making the request
+         * fail if the device cannot satisfy it.
+         *
+         * No resolution constraints are used.
+         */
 
         stream =
             await navigator.mediaDevices
                 .getUserMedia({
 
-                    video: true,
+                    video: {
+
+                        facingMode: {
+                            ideal: "environment"
+                        }
+
+                    },
 
                     audio: false
 
                 });
 
 
+        /*
+         * Attach camera stream.
+         */
+
         video.srcObject =
             stream;
 
 
+        /*
+         * Wait for video to start.
+         */
+
         await video.play();
+
+
+        /*
+         * Check which camera Chrome selected.
+         */
+
+        const track =
+            stream.getVideoTracks()[0];
+
+        const settings =
+            track.getSettings();
+
+        console.log(
+            "Selected camera:",
+            settings
+        );
 
 
         scanning = true;
@@ -677,10 +625,14 @@ async function startCamera() {
 
 
         setStatus(
-            "Camera active.\n" +
+            "Rear camera active.\n" +
             "Point it at the QR code."
         );
 
+
+        /*
+         * Start QR scanning.
+         */
 
         scanLoop();
 
@@ -700,8 +652,8 @@ async function startCamera() {
 
             showError(
                 "Camera could not be started.\n\n" +
-                "Another tab or app may already " +
-                "be using the camera."
+                "Another browser tab or app may " +
+                "already be using the camera."
             );
 
         }
@@ -774,7 +726,7 @@ function stopCamera() {
 
 
 /* =====================================================
-   SCAN LOOP
+   QR SCAN LOOP
 ===================================================== */
 
 function scanLoop() {
@@ -785,15 +737,12 @@ function scanLoop() {
 
     if (
         video.readyState >=
-        HTMLMediaElement
-            .HAVE_ENOUGH_DATA
+        HTMLMediaElement.HAVE_ENOUGH_DATA
     ) {
 
-
         /*
-         Set canvas to actual
-         camera resolution.
-        */
+         * Use actual camera dimensions.
+         */
 
         if (
             canvas.width !==
@@ -809,8 +758,8 @@ function scanLoop() {
 
 
         /*
-         Draw current frame.
-        */
+         * Draw camera frame.
+         */
 
         ctx.drawImage(
             video,
@@ -820,10 +769,6 @@ function scanLoop() {
             canvas.height
         );
 
-
-        /*
-         Get pixels.
-        */
 
         try {
 
@@ -835,10 +780,6 @@ function scanLoop() {
                     canvas.height
                 );
 
-
-            /*
-             Decode QR.
-            */
 
             const result =
                 jsQR(
@@ -863,16 +804,12 @@ function scanLoop() {
         catch (error) {
 
             console.error(
-                "QR error:",
+                "QR decoding error:",
                 error
             );
         }
     }
 
-
-    /*
-     Continue scanning.
-    */
 
     animationFrame =
         requestAnimationFrame(
@@ -887,15 +824,13 @@ function scanLoop() {
 
 function processQR(data) {
 
-
     /*
-     Ignore non-transfer QR codes.
-    */
+     * Ignore anything that isn't our
+     * transfer protocol.
+     */
 
     if (
-        !data.startsWith(
-            "QRF1|"
-        )
+        !data.startsWith("QRF1|")
     ) {
 
         return;
@@ -907,9 +842,9 @@ function processQR(data) {
 
 
     /*
-     Don't process the exact
-     same QR repeatedly.
-    */
+     * Don't process the exact same QR
+     * repeatedly while it remains visible.
+     */
 
     if (
         data === lastQR &&
@@ -928,19 +863,14 @@ function processQR(data) {
 
 
     /*
-     Find separators.
+     * Packet:
 
-     QRF1
-     |
-     frame
-     |
-     total
-     |
-     filename
-     |
-     size
-     |
-     payload
+       QRF1|
+       frame|
+       totalFrames|
+       filename|
+       fileSize|
+       base64Data
     */
 
     const p1 =
@@ -983,10 +913,6 @@ function processQR(data) {
     }
 
 
-    /*
-     Parse metadata.
-    */
-
     const frameNumber =
         Number(
             data.substring(
@@ -1028,24 +954,25 @@ function processQR(data) {
 
 
     /*
-     Validate metadata.
-    */
+     * Validate frame number.
+     */
 
     if (
-        !Number.isInteger(
-            frameNumber
-        ) ||
-        frameNumber < 0
+        !Number.isInteger(frameNumber) ||
+        frameNumber < 0 ||
+        frameNumber >= totalFrames
     ) {
 
         return;
     }
 
 
+    /*
+     * Validate total frame count.
+     */
+
     if (
-        !Number.isInteger(
-            totalFrames
-        ) ||
+        !Number.isInteger(totalFrames) ||
         totalFrames <= 0
     ) {
 
@@ -1053,19 +980,12 @@ function processQR(data) {
     }
 
 
-    if (
-        frameNumber >=
-        totalFrames
-    ) {
-
-        return;
-    }
-
+    /*
+     * Validate file size.
+     */
 
     if (
-        !Number.isFinite(
-            fileSize
-        ) ||
+        !Number.isFinite(fileSize) ||
         fileSize < 0
     ) {
 
@@ -1074,8 +994,8 @@ function processQR(data) {
 
 
     /*
-     Decode filename.
-    */
+     * Decode filename.
+     */
 
     let filename;
 
@@ -1095,17 +1015,14 @@ function processQR(data) {
 
 
     /*
-     New transfer detection.
-    */
+     * Detect a new transfer.
+     */
 
     if (
         !transfer ||
-        transfer.filename !==
-            filename ||
-        transfer.fileSize !==
-            fileSize ||
-        transfer.totalFrames !==
-            totalFrames
+        transfer.filename !== filename ||
+        transfer.fileSize !== fileSize ||
+        transfer.totalFrames !== totalFrames
     ) {
 
         transfer = {
@@ -1118,23 +1035,18 @@ function processQR(data) {
 
             totalFrames:
                 totalFrames
+
         };
 
 
         frames.clear();
 
 
-        /*
-         Update UI.
-        */
-
         fileNameElement.textContent =
             filename;
 
         fileSizeElement.textContent =
-            formatBytes(
-                fileSize
-            );
+            formatBytes(fileSize);
 
         totalElement.textContent =
             totalFrames;
@@ -1160,13 +1072,11 @@ function processQR(data) {
 
 
     /*
-     Already received?
-    */
+     * Ignore duplicate frame.
+     */
 
     if (
-        frames.has(
-            frameNumber
-        )
+        frames.has(frameNumber)
     ) {
 
         return;
@@ -1174,24 +1084,21 @@ function processQR(data) {
 
 
     /*
-     Decode Base64.
-    */
+     * Decode Base64.
+     */
 
     let bytes;
-
 
     try {
 
         bytes =
-            base64ToBytes(
-                payload
-            );
+            base64ToBytes(payload);
 
     }
     catch (error) {
 
         console.error(
-            "Base64 error:",
+            "Base64 decoding error:",
             error
         );
 
@@ -1200,8 +1107,8 @@ function processQR(data) {
 
 
     /*
-     Store frame.
-    */
+     * Store frame.
+     */
 
     frames.set(
         frameNumber,
@@ -1210,15 +1117,15 @@ function processQR(data) {
 
 
     /*
-     Update progress.
-    */
+     * Update progress.
+     */
 
     updateProgress();
 
 
     /*
-     Complete?
-    */
+     * Check completion.
+     */
 
     if (
         frames.size ===
@@ -1243,10 +1150,8 @@ function updateProgress() {
     const received =
         frames.size;
 
-
     const total =
         transfer.totalFrames;
-
 
     const missing =
         total - received;
@@ -1263,14 +1168,11 @@ function updateProgress() {
     receivedElement.textContent =
         received.toLocaleString();
 
-
     totalElement.textContent =
         total.toLocaleString();
 
-
     missingElement.textContent =
         missing.toLocaleString();
-
 
     percentElement.textContent =
         percentage + "%";
@@ -1304,12 +1206,12 @@ function rebuildFile() {
     );
 
 
-    /*
-     Calculate total bytes.
-    */
-
     let totalBytes = 0;
 
+
+    /*
+     * Verify every frame exists.
+     */
 
     for (
         let i = 0;
@@ -1339,8 +1241,8 @@ function rebuildFile() {
 
 
     /*
-     Verify file size.
-    */
+     * Verify final size.
+     */
 
     if (
         totalBytes !==
@@ -1362,8 +1264,8 @@ function rebuildFile() {
 
 
     /*
-     Allocate final file.
-    */
+     * Allocate output.
+     */
 
     const output =
         new Uint8Array(
@@ -1375,8 +1277,8 @@ function rebuildFile() {
 
 
     /*
-     Restore frames in order.
-    */
+     * Restore frames in order.
+     */
 
     for (
         let i = 0;
@@ -1400,8 +1302,8 @@ function rebuildFile() {
 
 
     /*
-     Create Blob.
-    */
+     * Create file Blob.
+     */
 
     const blob =
         new Blob(
@@ -1414,23 +1316,19 @@ function rebuildFile() {
 
 
     /*
-     Create download URL.
-    */
+     * Create download URL.
+     */
 
     const url =
-        URL.createObjectURL(
-            blob
-        );
+        URL.createObjectURL(blob);
 
 
     /*
-     Create download link.
-    */
+     * Download using original filename.
+     */
 
     const link =
-        document.createElement(
-            "a"
-        );
+        document.createElement("a");
 
 
     link.href =
@@ -1440,27 +1338,21 @@ function rebuildFile() {
         transfer.filename;
 
 
-    document.body.appendChild(
-        link
-    );
-
+    document.body.appendChild(link);
 
     link.click();
-
 
     link.remove();
 
 
     /*
-     Release URL later.
-    */
+     * Release memory later.
+     */
 
     setTimeout(
         function () {
 
-            URL.revokeObjectURL(
-                url
-            );
+            URL.revokeObjectURL(url);
 
         },
         30000
@@ -1468,8 +1360,8 @@ function rebuildFile() {
 
 
     /*
-     Success UI.
-    */
+     * Success.
+     */
 
     progressBar.style.width =
         "100%";
@@ -1548,9 +1440,7 @@ function showError(message) {
     statusElement.textContent =
         "❌ " + message;
 
-    console.error(
-        message
-    );
+    console.error(message);
 }
 
 
@@ -1577,8 +1467,10 @@ function formatBytes(bytes) {
     }
 
 
-    if (bytes <
-        1024 * 1024 * 1024) {
+    if (
+        bytes <
+        1024 * 1024 * 1024
+    ) {
 
         return (
             bytes /
