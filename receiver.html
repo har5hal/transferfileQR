@@ -1,117 +1,1604 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Camera Test</title>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>QR File Receiver</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #07111f;
+    color: #f8fafc;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+.app {
+    width: min(900px, 96vw);
+    margin: auto;
+    padding: 12px;
+}
+
+.card {
+    background: #111c2e;
+    border: 1px solid #263750;
+    border-radius: 18px;
+    padding: 16px;
+}
+
+h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #94a3b8;
+    margin: 5px 0 14px;
+}
+
+
+/* CAMERA */
+
+.camera {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 4 / 3;
+
+    background: #000;
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    background: #000;
+}
+
+
+/* SCAN GUIDE */
+
+.scan-box {
+    position: absolute;
+
+    width: min(70%, 430px);
+    aspect-ratio: 1;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    border: 3px solid #22c55e;
+
+    border-radius: 14px;
+
+    pointer-events: none;
+
+    box-shadow:
+        0 0 0 9999px
+        rgba(0,0,0,.20);
+}
+
+
+/* CONTROLS */
+
+.controls {
+    text-align: center;
+    margin: 12px 0;
+}
+
+button {
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 12px 22px;
+
+    margin: 4px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: white;
+
+    background: #2563eb;
+}
+
+button.stop {
+    background: #dc2626;
+}
+
+button:disabled {
+    opacity: .45;
+}
+
+
+/* STATUS */
+
+.status {
+    margin-top: 10px;
+
+    padding: 12px;
+
+    border-radius: 9px;
+
+    text-align: center;
+
+    background: #0b1525;
+
+    color: #cbd5e1;
+
+    white-space: pre-wrap;
+}
+
+.status.ok {
+    color: #4ade80;
+}
+
+.status.error {
+    color: #f87171;
+}
+
+
+/* PROGRESS */
+
+.progress {
+    height: 22px;
+
+    margin-top: 14px;
+
+    background: #334155;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+#progressBar {
+    width: 0%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #22c55e,
+            #16a34a
+        );
+
+    transition: width .15s;
+}
+
+
+/* INFO */
+
+.info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-top: 10px;
+}
+
+.box {
+    padding: 10px;
+
+    text-align: center;
+
+    background: #0b1525;
+
+    border-radius: 8px;
+}
+
+.value {
+    display: block;
+
+    font-weight: 800;
+
+    overflow-wrap: anywhere;
+}
+
+.label {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    color: #94a3b8;
+}
+
+@media(max-width:600px) {
+
+    .info {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 10px;
+    }
+}
+
+</style>
+
+
+<!--
+ IMPORTANT:
+ Put jsQR.js beside this HTML file.
+
+ receiver.html
+ jsQR.js
+-->
+
+<script src="./jsQR.js"></script>
+
 </head>
 
-<body style="background:#111;color:white;font-family:sans-serif">
+<body>
 
-<h2>Camera Test</h2>
+<div class="app">
+
+<div class="card">
+
+<h1>
+📥 QR File Receiver
+</h1>
+
+<div class="subtitle">
+Point the camera at the sender screen
+</div>
+
+
+<!-- CAMERA -->
+
+<div class="camera">
 
 <video
     id="video"
     autoplay
     playsinline
-    muted
-    style="width:100%; max-width:600px; background:#000;">
+    muted>
 </video>
 
-<div id="status">Starting...</div>
+<div class="scan-box"></div>
+
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="controls">
+
+<button id="startButton">
+📷 Start Camera
+</button>
+
+<button
+    id="stopButton"
+    class="stop"
+    disabled>
+Stop
+</button>
+
+</div>
+
+
+<!-- STATUS -->
+
+<div
+    id="status"
+    class="status">
+
+Ready.
+
+</div>
+
+
+<!-- PROGRESS -->
+
+<div class="progress">
+
+<div id="progressBar"></div>
+
+</div>
+
+
+<!-- FILE INFO -->
+
+<div class="info">
+
+<div class="box">
+
+<span
+    id="fileName"
+    class="value">
+—
+</span>
+
+<span class="label">
+File
+</span>
+
+</div>
+
+
+<div class="box">
+
+<span
+    id="received"
+    class="value">
+0
+</span>
+
+<span class="label">
+Received
+</span>
+
+</div>
+
+
+<div class="box">
+
+<span
+    id="total"
+    class="value">
+—
+</span>
+
+<span class="label">
+Total
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info">
+
+<div class="box">
+
+<span
+    id="fileSize"
+    class="value">
+—
+</span>
+
+<span class="label">
+Size
+</span>
+
+</div>
+
+
+<div class="box">
+
+<span
+    id="missing"
+    class="value">
+—
+</span>
+
+<span class="label">
+Missing
+</span>
+
+</div>
+
+
+<div class="box">
+
+<span
+    id="percent"
+    class="value">
+0%
+</span>
+
+<span class="label">
+Progress
+</span>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
 
 <script>
-const video = document.getElementById("video");
-const status = document.getElementById("status");
 
-function log(message) {
-    console.log(message);
-    status.textContent = message;
-}
+/*
+=========================================================
+ QR FILE RECEIVER
+=========================================================
+
+PACKET FORMAT:
+
+QRF1|frame|totalFrames|filename|fileSize|base64Data
+
+Example:
+
+QRF1|0|100|test.zip|50000|UEsDB...
+
+Each QR contains one frame.
+
+The receiver:
+
+1. scans QR
+2. extracts frame
+3. stores frame
+4. tracks progress
+5. rebuilds the original file
+6. downloads the file
+=========================================================
+*/
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const video =
+    document.getElementById(
+        "video"
+    );
+
+const startButton =
+    document.getElementById(
+        "startButton"
+    );
+
+const stopButton =
+    document.getElementById(
+        "stopButton"
+    );
+
+const statusElement =
+    document.getElementById(
+        "status"
+    );
+
+const progressBar =
+    document.getElementById(
+        "progressBar"
+    );
+
+const fileNameElement =
+    document.getElementById(
+        "fileName"
+    );
+
+const receivedElement =
+    document.getElementById(
+        "received"
+    );
+
+const totalElement =
+    document.getElementById(
+        "total"
+    );
+
+const fileSizeElement =
+    document.getElementById(
+        "fileSize"
+    );
+
+const missingElement =
+    document.getElementById(
+        "missing"
+    );
+
+const percentElement =
+    document.getElementById(
+        "percent"
+    );
+
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+let stream = null;
+
+let scanning = false;
+
+let animationFrame = null;
+
+
+/* =====================================================
+   CANVAS
+===================================================== */
+
+const canvas =
+    document.createElement(
+        "canvas"
+    );
+
+const ctx =
+    canvas.getContext(
+        "2d",
+        {
+            willReadFrequently: true
+        }
+    );
+
+
+/* =====================================================
+   TRANSFER STATE
+===================================================== */
+
+let transfer = null;
+
+
+/*
+ Map:
+
+ frame number
+      ↓
+ Uint8Array
+*/
+
+const frames =
+    new Map();
+
+
+/*
+ Last decoded QR.
+
+ Used to prevent processing
+ the exact same QR repeatedly
+ while it remains on screen.
+*/
+
+let lastQR = "";
+
+let lastQRTime = 0;
+
+
+/* =====================================================
+   START CAMERA
+===================================================== */
+
+startButton.addEventListener(
+    "click",
+    startCamera
+);
+
 
 async function startCamera() {
 
-    log("1. Checking camera API...");
+    if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ) {
 
-    if (!navigator.mediaDevices) {
-        log("ERROR: navigator.mediaDevices is unavailable");
+        showError(
+            "Camera API is not available."
+        );
+
         return;
     }
 
-    if (!navigator.mediaDevices.getUserMedia) {
-        log("ERROR: getUserMedia is unavailable");
+
+    if (
+        typeof jsQR ===
+        "undefined"
+    ) {
+
+        showError(
+            "jsQR.js was not loaded.\n" +
+            "Make sure jsQR.js is beside receiver.html."
+        );
+
         return;
     }
 
-    log("2. Requesting camera...");
 
     try {
 
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: false
-            });
-
-        log("3. Camera stream received");
-
-        console.log("Stream:", stream);
-        console.log("Tracks:", stream.getVideoTracks());
-
-        video.srcObject = stream;
-
-        log("4. Video source attached");
-
-        video.onloadedmetadata = async () => {
-
-            log(
-                "5. Video metadata loaded: " +
-                video.videoWidth +
-                " × " +
-                video.videoHeight
-            );
-
-            try {
-                await video.play();
-
-                log(
-                    "6. CAMERA WORKING: " +
-                    video.videoWidth +
-                    " × " +
-                    video.videoHeight
-                );
-
-            } catch (e) {
-
-                log(
-                    "PLAY ERROR: " +
-                    e.name +
-                    " - " +
-                    e.message
-                );
-
-                console.error(e);
-            }
-        };
-
-    } catch (e) {
-
-        log(
-            "CAMERA ERROR: " +
-            e.name +
-            " - " +
-            e.message
+        setStatus(
+            "Starting camera..."
         );
+
+
+        /*
+         IMPORTANT:
+
+         Keep this simple.
+
+         Android Chrome previously
+         returned NotReadableError
+         when another camera tab was open.
+
+         No resolution/facingMode
+         constraints are specified.
+        */
+
+        stream =
+            await navigator.mediaDevices
+                .getUserMedia({
+
+                    video: true,
+
+                    audio: false
+
+                });
+
+
+        video.srcObject =
+            stream;
+
+
+        await video.play();
+
+
+        scanning = true;
+
+
+        startButton.disabled =
+            true;
+
+        stopButton.disabled =
+            false;
+
+
+        setStatus(
+            "Camera active.\n" +
+            "Point it at the QR code."
+        );
+
+
+        scanLoop();
+
+    }
+    catch (error) {
 
         console.error(
-            "getUserMedia error:",
-            e
+            "Camera error:",
+            error
         );
+
+
+        if (
+            error.name ===
+            "NotReadableError"
+        ) {
+
+            showError(
+                "Camera could not be started.\n\n" +
+                "Another tab or app may already " +
+                "be using the camera."
+            );
+
+        }
+        else {
+
+            showError(
+                "Camera error:\n" +
+                error.name +
+                "\n" +
+                error.message
+            );
+        }
     }
 }
 
-startCamera();
-</script>
 
+/* =====================================================
+   STOP CAMERA
+===================================================== */
+
+stopButton.addEventListener(
+    "click",
+    stopCamera
+);
+
+
+function stopCamera() {
+
+    scanning = false;
+
+
+    if (animationFrame) {
+
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+        animationFrame = null;
+    }
+
+
+    if (stream) {
+
+        stream
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+
+        stream = null;
+    }
+
+
+    video.srcObject =
+        null;
+
+
+    startButton.disabled =
+        false;
+
+    stopButton.disabled =
+        true;
+
+
+    setStatus(
+        "Camera stopped."
+    );
+}
+
+
+/* =====================================================
+   SCAN LOOP
+===================================================== */
+
+function scanLoop() {
+
+    if (!scanning)
+        return;
+
+
+    if (
+        video.readyState >=
+        HTMLMediaElement
+            .HAVE_ENOUGH_DATA
+    ) {
+
+
+        /*
+         Set canvas to actual
+         camera resolution.
+        */
+
+        if (
+            canvas.width !==
+            video.videoWidth
+        ) {
+
+            canvas.width =
+                video.videoWidth;
+
+            canvas.height =
+                video.videoHeight;
+        }
+
+
+        /*
+         Draw current frame.
+        */
+
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        /*
+         Get pixels.
+        */
+
+        try {
+
+            const image =
+                ctx.getImageData(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+
+            /*
+             Decode QR.
+            */
+
+            const result =
+                jsQR(
+                    image.data,
+                    image.width,
+                    image.height,
+                    {
+                        inversionAttempts:
+                            "attemptBoth"
+                    }
+                );
+
+
+            if (result) {
+
+                processQR(
+                    result.data
+                );
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "QR error:",
+                error
+            );
+        }
+    }
+
+
+    /*
+     Continue scanning.
+    */
+
+    animationFrame =
+        requestAnimationFrame(
+            scanLoop
+        );
+}
+
+
+/* =====================================================
+   PROCESS QR
+===================================================== */
+
+function processQR(data) {
+
+
+    /*
+     Ignore non-transfer QR codes.
+    */
+
+    if (
+        !data.startsWith(
+            "QRF1|"
+        )
+    ) {
+
+        return;
+    }
+
+
+    const now =
+        Date.now();
+
+
+    /*
+     Don't process the exact
+     same QR repeatedly.
+    */
+
+    if (
+        data === lastQR &&
+        now - lastQRTime < 250
+    ) {
+
+        return;
+    }
+
+
+    lastQR =
+        data;
+
+    lastQRTime =
+        now;
+
+
+    /*
+     Find separators.
+
+     QRF1
+     |
+     frame
+     |
+     total
+     |
+     filename
+     |
+     size
+     |
+     payload
+    */
+
+    const p1 =
+        data.indexOf("|");
+
+    const p2 =
+        data.indexOf(
+            "|",
+            p1 + 1
+        );
+
+    const p3 =
+        data.indexOf(
+            "|",
+            p2 + 1
+        );
+
+    const p4 =
+        data.indexOf(
+            "|",
+            p3 + 1
+        );
+
+    const p5 =
+        data.indexOf(
+            "|",
+            p4 + 1
+        );
+
+
+    if (
+        p1 < 0 ||
+        p2 < 0 ||
+        p3 < 0 ||
+        p4 < 0 ||
+        p5 < 0
+    ) {
+
+        return;
+    }
+
+
+    /*
+     Parse metadata.
+    */
+
+    const frameNumber =
+        Number(
+            data.substring(
+                p1 + 1,
+                p2
+            )
+        );
+
+
+    const totalFrames =
+        Number(
+            data.substring(
+                p2 + 1,
+                p3
+            )
+        );
+
+
+    const encodedFilename =
+        data.substring(
+            p3 + 1,
+            p4
+        );
+
+
+    const fileSize =
+        Number(
+            data.substring(
+                p4 + 1,
+                p5
+            )
+        );
+
+
+    const payload =
+        data.substring(
+            p5 + 1
+        );
+
+
+    /*
+     Validate metadata.
+    */
+
+    if (
+        !Number.isInteger(
+            frameNumber
+        ) ||
+        frameNumber < 0
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !Number.isInteger(
+            totalFrames
+        ) ||
+        totalFrames <= 0
+    ) {
+
+        return;
+    }
+
+
+    if (
+        frameNumber >=
+        totalFrames
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !Number.isFinite(
+            fileSize
+        ) ||
+        fileSize < 0
+    ) {
+
+        return;
+    }
+
+
+    /*
+     Decode filename.
+    */
+
+    let filename;
+
+    try {
+
+        filename =
+            decodeURIComponent(
+                encodedFilename
+            );
+
+    }
+    catch {
+
+        filename =
+            encodedFilename;
+    }
+
+
+    /*
+     New transfer detection.
+    */
+
+    if (
+        !transfer ||
+        transfer.filename !==
+            filename ||
+        transfer.fileSize !==
+            fileSize ||
+        transfer.totalFrames !==
+            totalFrames
+    ) {
+
+        transfer = {
+
+            filename:
+                filename,
+
+            fileSize:
+                fileSize,
+
+            totalFrames:
+                totalFrames
+        };
+
+
+        frames.clear();
+
+
+        /*
+         Update UI.
+        */
+
+        fileNameElement.textContent =
+            filename;
+
+        fileSizeElement.textContent =
+            formatBytes(
+                fileSize
+            );
+
+        totalElement.textContent =
+            totalFrames;
+
+        receivedElement.textContent =
+            "0";
+
+        missingElement.textContent =
+            totalFrames;
+
+        percentElement.textContent =
+            "0%";
+
+        progressBar.style.width =
+            "0%";
+
+
+        setStatus(
+            "New transfer detected:\n" +
+            filename
+        );
+    }
+
+
+    /*
+     Already received?
+    */
+
+    if (
+        frames.has(
+            frameNumber
+        )
+    ) {
+
+        return;
+    }
+
+
+    /*
+     Decode Base64.
+    */
+
+    let bytes;
+
+
+    try {
+
+        bytes =
+            base64ToBytes(
+                payload
+            );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Base64 error:",
+            error
+        );
+
+        return;
+    }
+
+
+    /*
+     Store frame.
+    */
+
+    frames.set(
+        frameNumber,
+        bytes
+    );
+
+
+    /*
+     Update progress.
+    */
+
+    updateProgress();
+
+
+    /*
+     Complete?
+    */
+
+    if (
+        frames.size ===
+        transfer.totalFrames
+    ) {
+
+        rebuildFile();
+    }
+}
+
+
+/* =====================================================
+   UPDATE PROGRESS
+===================================================== */
+
+function updateProgress() {
+
+    if (!transfer)
+        return;
+
+
+    const received =
+        frames.size;
+
+
+    const total =
+        transfer.totalFrames;
+
+
+    const missing =
+        total - received;
+
+
+    const percentage =
+        Math.round(
+            received /
+            total *
+            100
+        );
+
+
+    receivedElement.textContent =
+        received.toLocaleString();
+
+
+    totalElement.textContent =
+        total.toLocaleString();
+
+
+    missingElement.textContent =
+        missing.toLocaleString();
+
+
+    percentElement.textContent =
+        percentage + "%";
+
+
+    progressBar.style.width =
+        percentage + "%";
+
+
+    setStatus(
+        "Receiving:\n" +
+        transfer.filename +
+        "\n\n" +
+        received.toLocaleString() +
+        " / " +
+        total.toLocaleString() +
+        " frames"
+    );
+}
+
+
+/* =====================================================
+   REBUILD FILE
+===================================================== */
+
+function rebuildFile() {
+
+    setStatus(
+        "All QR frames received.\n" +
+        "Rebuilding file..."
+    );
+
+
+    /*
+     Calculate total bytes.
+    */
+
+    let totalBytes = 0;
+
+
+    for (
+        let i = 0;
+        i < transfer.totalFrames;
+        i++
+    ) {
+
+        const chunk =
+            frames.get(i);
+
+
+        if (!chunk) {
+
+            showError(
+                "Frame " +
+                i +
+                " is missing."
+            );
+
+            return;
+        }
+
+
+        totalBytes +=
+            chunk.length;
+    }
+
+
+    /*
+     Verify file size.
+    */
+
+    if (
+        totalBytes !==
+        transfer.fileSize
+    ) {
+
+        showError(
+            "File size mismatch.\n\n" +
+            "Expected: " +
+            transfer.fileSize +
+            " bytes\n" +
+            "Received: " +
+            totalBytes +
+            " bytes"
+        );
+
+        return;
+    }
+
+
+    /*
+     Allocate final file.
+    */
+
+    const output =
+        new Uint8Array(
+            totalBytes
+        );
+
+
+    let offset = 0;
+
+
+    /*
+     Restore frames in order.
+    */
+
+    for (
+        let i = 0;
+        i < transfer.totalFrames;
+        i++
+    ) {
+
+        const chunk =
+            frames.get(i);
+
+
+        output.set(
+            chunk,
+            offset
+        );
+
+
+        offset +=
+            chunk.length;
+    }
+
+
+    /*
+     Create Blob.
+    */
+
+    const blob =
+        new Blob(
+            [output],
+            {
+                type:
+                    "application/octet-stream"
+            }
+        );
+
+
+    /*
+     Create download URL.
+    */
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    /*
+     Create download link.
+    */
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+    link.download =
+        transfer.filename;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    /*
+     Release URL later.
+    */
+
+    setTimeout(
+        function () {
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        },
+        30000
+    );
+
+
+    /*
+     Success UI.
+    */
+
+    progressBar.style.width =
+        "100%";
+
+    percentElement.textContent =
+        "100%";
+
+    missingElement.textContent =
+        "0";
+
+
+    statusElement.className =
+        "status ok";
+
+
+    statusElement.textContent =
+        "✓ Transfer complete!\n\n" +
+        transfer.filename +
+        "\n\n" +
+        formatBytes(
+            transfer.fileSize
+        );
+}
+
+
+/* =====================================================
+   BASE64 → BYTES
+===================================================== */
+
+function base64ToBytes(base64) {
+
+    const binary =
+        atob(base64);
+
+
+    const bytes =
+        new Uint8Array(
+            binary.length
+        );
+
+
+    for (
+        let i = 0;
+        i < binary.length;
+        i++
+    ) {
+
+        bytes[i] =
+            binary.charCodeAt(i);
+    }
+
+
+    return bytes;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function setStatus(message) {
+
+    statusElement.className =
+        "status";
+
+    statusElement.textContent =
+        message;
+}
+
+
+function showError(message) {
+
+    statusElement.className =
+        "status error";
+
+    statusElement.textContent =
+        "❌ " + message;
+
+    console.error(
+        message
+    );
+}
+
+
+/* =====================================================
+   FORMAT FILE SIZE
+===================================================== */
+
+function formatBytes(bytes) {
+
+    if (bytes === 0)
+        return "0 B";
+
+
+    if (bytes < 1024)
+        return bytes + " B";
+
+
+    if (bytes < 1024 * 1024) {
+
+        return (
+            bytes / 1024
+        ).toFixed(1) +
+        " KB";
+    }
+
+
+    if (bytes <
+        1024 * 1024 * 1024) {
+
+        return (
+            bytes /
+            1024 /
+            1024
+        ).toFixed(2) +
+        " MB";
+    }
+
+
+    return (
+        bytes /
+        1024 /
+        1024 /
+        1024
+    ).toFixed(2) +
+    " GB";
+}
+
+</script>
 
 </body>
 </html>
