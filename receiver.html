@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -32,19 +33,20 @@ body {
 }
 
 .app {
-    width: min(900px, 100%);
+    width: min(950px, 100%);
     margin: 0 auto;
+
     padding:
-        max(12px, env(safe-area-inset-top))
-        12px
-        max(20px, env(safe-area-inset-bottom));
+        max(8px, env(safe-area-inset-top))
+        8px
+        max(18px, env(safe-area-inset-bottom));
 }
 
 .card {
     background: #111c2e;
     border: 1px solid #263750;
-    border-radius: 18px;
-    padding: 18px;
+    border-radius: 16px;
+    padding: 14px;
 }
 
 h1 {
@@ -54,37 +56,56 @@ h1 {
 }
 
 .subtitle {
-    margin: 8px 0 18px;
+    margin: 7px 0 12px;
     text-align: center;
     color: #94a3b8;
     font-size: 14px;
 }
 
+
+/* CAMERA */
+
 .camera-section {
     width: 100%;
+
     display: flex;
     flex-direction: column;
+
     align-items: center;
 }
 
 .camera-box {
     position: relative;
-    width: min(720px, 100%);
+
+    width: 100%;
+    max-width: 900px;
+
     aspect-ratio: 4 / 3;
+
     background: #000;
-    border-radius: 14px;
+
+    border-radius: 12px;
+
     overflow: hidden;
+
     border: 2px solid #334155;
 }
 
 #video {
     position: absolute;
+
     inset: 0;
+
     width: 100%;
     height: 100%;
+
     display: block;
-    object-fit: cover;
+
+    object-fit: contain;
+
     background: #000;
+
+    -webkit-transform: translateZ(0);
 }
 
 #canvas {
@@ -93,47 +114,77 @@ h1 {
 
 .scan-guide {
     position: absolute;
+
     left: 50%;
     top: 50%;
-    width: 62%;
-    aspect-ratio: 1;
+
+    width: 86%;
+    height: 86%;
+
     transform: translate(-50%, -50%);
+
     border: 3px solid rgba(34, 197, 94, 0.9);
-    border-radius: 14px;
+
+    border-radius: 12px;
+
     pointer-events: none;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+
+    box-shadow:
+        0 0 0 9999px rgba(0, 0, 0, 0.08);
 }
 
 .camera-message {
     position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    padding: 9px;
+
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    padding: 8px;
+
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.65);
+
+    background: rgba(0, 0, 0, 0.60);
+
     color: white;
+
     text-align: center;
+
     font-size: 13px;
+
     pointer-events: none;
 }
 
+
+/* CONTROLS */
+
 .controls {
     display: flex;
+
     flex-wrap: wrap;
+
     justify-content: center;
+
     gap: 8px;
-    margin-top: 14px;
+
+    margin-top: 10px;
 }
 
 button {
     border: 0;
+
     border-radius: 8px;
+
     padding: 12px 18px;
+
     background: #2563eb;
+
     color: white;
+
     font-size: 15px;
+
     font-weight: bold;
+
     cursor: pointer;
 }
 
@@ -154,14 +205,24 @@ button:disabled {
     cursor: not-allowed;
 }
 
+
+/* STATUS */
+
 .status {
-    margin-top: 14px;
-    padding: 12px;
+    margin-top: 10px;
+
+    padding: 11px;
+
     background: #0b1525;
+
     border-radius: 8px;
+
     text-align: center;
+
     color: #cbd5e1;
-    line-height: 1.45;
+
+    line-height: 1.4;
+
     white-space: pre-wrap;
 }
 
@@ -177,105 +238,172 @@ button:disabled {
     color: #fbbf24;
 }
 
+
+/* PROGRESS */
+
 .progress-container {
-    margin-top: 14px;
+    margin-top: 10px;
 }
 
 .progress {
     width: 100%;
+
     height: 20px;
+
     background: #334155;
+
     border-radius: 20px;
+
     overflow: hidden;
 }
 
 #progressBar {
     width: 0%;
+
     height: 100%;
+
     background: #22c55e;
+
     transition: width 0.15s linear;
 }
 
 .progress-text {
-    margin-top: 7px;
+    margin-top: 6px;
+
     text-align: center;
+
     font-weight: bold;
 }
 
+
+/* INFORMATION */
+
 .info {
-    margin-top: 14px;
+    margin-top: 10px;
+
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 7px;
 }
 
 .info-box {
     min-width: 0;
+
     background: #0b1525;
-    padding: 10px;
+
+    padding: 9px;
+
     border-radius: 8px;
+
     text-align: center;
 }
 
 .value {
     display: block;
+
     font-weight: bold;
+
     overflow-wrap: anywhere;
 }
 
 .label {
     display: block;
-    margin-top: 4px;
+
+    margin-top: 3px;
+
     color: #94a3b8;
+
     font-size: 12px;
 }
 
+
+/* MISSING PACKETS */
+
 .missing-box {
-    margin-top: 14px;
-    padding: 14px;
+    margin-top: 10px;
+
+    padding: 12px;
+
     background: #0b1525;
+
     border-radius: 10px;
 }
 
 .missing-title {
     font-weight: bold;
-    margin-bottom: 8px;
+
+    margin-bottom: 7px;
 }
 
 #missingPackets {
     width: 100%;
-    min-height: 90px;
+
+    min-height: 80px;
+
     resize: vertical;
-    padding: 10px;
+
+    padding: 9px;
+
     background: #111c2e;
+
     color: white;
+
     border: 1px solid #334155;
+
     border-radius: 8px;
+
     font-family: monospace;
+
     font-size: 13px;
 }
 
+
+/* DOWNLOAD */
+
 .download-area {
-    margin-top: 15px;
+    margin-top: 12px;
+
     text-align: center;
 }
 
 #downloadButton {
     background: #16a34a;
+
     font-size: 16px;
+
     padding: 14px 25px;
 }
 
+
+/* MOBILE */
+
 @media (max-width: 600px) {
 
+    .app {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
     .card {
-        padding: 12px;
-        border-radius: 14px;
+        padding: 7px;
+
+        border-radius: 12px;
     }
 
     .camera-box {
         width: 100%;
+
         aspect-ratio: 4 / 3;
+
+        border-radius: 10px;
+    }
+
+    .scan-guide {
+        width: 88%;
+        height: 88%;
     }
 
     .info {
@@ -287,19 +415,24 @@ button:disabled {
     }
 }
 
+
+/* LANDSCAPE / SHORT SCREEN */
+
 @media (max-height: 600px) {
 
     .camera-box {
-        width: min(65vh, 720px);
+        width: min(70vh, 900px);
+
         aspect-ratio: 4 / 3;
     }
 
     .subtitle {
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 }
 
 </style>
+
 </head>
 
 <body>
@@ -308,11 +441,14 @@ button:disabled {
 
 <div class="card">
 
-<h1>📥 Offline QR File Receiver</h1>
+<h1>
+📥 Offline QR File Receiver
+</h1>
 
 <p class="subtitle">
 Scan QR packets to reconstruct the file
 </p>
+
 
 <div class="camera-section">
 
@@ -337,9 +473,11 @@ Camera stopped
 
 </div>
 
+
 <div class="controls">
 
-<button id="startButton">
+<button
+    id="startButton">
 Start Camera
 </button>
 
@@ -354,11 +492,13 @@ Stop Camera
 
 </div>
 
+
 <div
     id="status"
     class="status">
 Press Start Camera.
 </div>
+
 
 <div class="progress-container">
 
@@ -376,6 +516,7 @@ Press Start Camera.
 
 </div>
 
+
 <div class="info">
 
 <div class="info-box">
@@ -392,6 +533,7 @@ File
 
 </div>
 
+
 <div class="info-box">
 
 <span
@@ -405,6 +547,7 @@ Packets Received
 </span>
 
 </div>
+
 
 <div class="info-box">
 
@@ -422,6 +565,7 @@ Total Packets
 
 </div>
 
+
 <div class="info">
 
 <div class="info-box">
@@ -438,6 +582,7 @@ Transfer ID
 
 </div>
 
+
 <div class="info-box">
 
 <span
@@ -451,6 +596,7 @@ Missing
 </span>
 
 </div>
+
 
 <div class="info-box">
 
@@ -467,6 +613,7 @@ File Size
 </div>
 
 </div>
+
 
 <div class="missing-box">
 
@@ -492,6 +639,7 @@ Copy Missing IDs
 
 </div>
 
+
 <div class="download-area">
 
 <button
@@ -503,9 +651,11 @@ Download File
 
 </div>
 
+
 </div>
 
 </div>
+
 
 <script>
 
@@ -562,8 +712,11 @@ const downloadButton =
 
 
 let stream = null;
+
 let scanning = false;
+
 let animationFrame = null;
+
 
 const ctx =
     canvas.getContext(
@@ -575,15 +728,21 @@ const ctx =
 
 
 let activeTransferId = null;
+
 let totalPackets = 0;
+
 let expectedFileSize = 0;
+
 let expectedFileName = "";
 
 let packets = new Map();
+
 let packetChecksums = new Map();
 
 let fileReady = false;
 
+
+/* START CAMERA */
 
 startButton.addEventListener(
     "click",
@@ -595,7 +754,8 @@ async function startCamera() {
 
     stopCamera();
 
-    status.className = "status";
+    status.className =
+        "status";
 
     status.textContent =
         "Starting rear camera...";
@@ -609,10 +769,12 @@ async function startCamera() {
             !navigator.mediaDevices ||
             !navigator.mediaDevices.getUserMedia
         ) {
+
             throw new Error(
                 "Camera API is not available. Use HTTPS and a supported browser."
             );
         }
+
 
         stream =
             await navigator.mediaDevices.getUserMedia(
@@ -621,35 +783,49 @@ async function startCamera() {
                         facingMode: {
                             ideal: "environment"
                         },
+
                         width: {
-                            ideal: 1280
+                            ideal: 1920
                         },
+
                         height: {
-                            ideal: 720
+                            ideal: 1080
                         }
                     },
+
                     audio: false
                 }
             );
 
+
         video.srcObject =
             stream;
 
+
         await video.play();
+
 
         scanning = true;
 
-        startButton.disabled = true;
-        stopButton.disabled = false;
+
+        startButton.disabled =
+            true;
+
+        stopButton.disabled =
+            false;
+
 
         cameraMessage.textContent =
             "Point the rear camera at the QR code";
 
+
         status.className =
             "status";
 
+
         status.textContent =
             "Camera ready. Scan the QR packets.";
+
 
         scanLoop();
 
@@ -658,11 +834,14 @@ async function startCamera() {
 
         console.error(error);
 
+
         cameraMessage.textContent =
             "Camera error";
 
+
         status.className =
             "status error";
+
 
         status.textContent =
             "Camera access failed: " +
@@ -670,11 +849,17 @@ async function startCamera() {
             " - " +
             error.message;
 
-        startButton.disabled = false;
-        stopButton.disabled = true;
+
+        startButton.disabled =
+            false;
+
+        stopButton.disabled =
+            true;
     }
 }
 
+
+/* STOP CAMERA */
 
 stopButton.addEventListener(
     "click",
@@ -686,6 +871,7 @@ function stopCamera() {
 
     scanning = false;
 
+
     if (animationFrame) {
 
         cancelAnimationFrame(
@@ -695,32 +881,45 @@ function stopCamera() {
         animationFrame = null;
     }
 
+
     if (stream) {
 
-        stream.getTracks().forEach(
-            function(track) {
-                track.stop();
-            }
-        );
+        stream
+            .getTracks()
+            .forEach(
+                function(track) {
+                    track.stop();
+                }
+            );
 
         stream = null;
     }
 
-    video.srcObject = null;
+
+    video.srcObject =
+        null;
+
 
     cameraMessage.textContent =
         "Camera stopped";
 
-    startButton.disabled = false;
-    stopButton.disabled = true;
+
+    startButton.disabled =
+        false;
+
+    stopButton.disabled =
+        true;
 }
 
+
+/* SCANNER */
 
 function scanLoop() {
 
     if (!scanning) {
         return;
     }
+
 
     if (
         video.readyState >=
@@ -733,6 +932,7 @@ function scanLoop() {
         const height =
             video.videoHeight;
 
+
         if (
             width > 0 &&
             height > 0
@@ -744,6 +944,7 @@ function scanLoop() {
             canvas.height =
                 height;
 
+
             ctx.drawImage(
                 video,
                 0,
@@ -752,6 +953,7 @@ function scanLoop() {
                 height
             );
 
+
             const imageData =
                 ctx.getImageData(
                     0,
@@ -759,6 +961,7 @@ function scanLoop() {
                     width,
                     height
                 );
+
 
             if (
                 typeof jsQR ===
@@ -776,6 +979,7 @@ function scanLoop() {
                         }
                     );
 
+
                 if (
                     code &&
                     code.data
@@ -789,6 +993,7 @@ function scanLoop() {
         }
     }
 
+
     animationFrame =
         requestAnimationFrame(
             scanLoop
@@ -796,10 +1001,13 @@ function scanLoop() {
 }
 
 
+/* PROCESS QR */
+
 function processQR(text) {
 
     const parts =
         text.split("|");
+
 
     if (
         parts.length < 9
@@ -807,25 +1015,33 @@ function processQR(text) {
         return;
     }
 
+
     if (
-        parts[0] !== "QRF4"
+        parts[0] !==
+        "QRF4"
     ) {
         return;
     }
 
+
     const incomingTransferId =
         parts[1];
+
 
     const packetId =
         Number(parts[2]);
 
+
     const incomingTotal =
         Number(parts[3]);
+
 
     const incomingFileSize =
         Number(parts[4]);
 
+
     let incomingFileName;
+
 
     try {
 
@@ -840,14 +1056,18 @@ function processQR(text) {
         return;
     }
 
+
     const payloadSize =
         Number(parts[6]);
+
 
     const checksum =
         parts[7];
 
+
     const base64 =
         parts.slice(8).join("|");
+
 
     if (
         !Number.isInteger(packetId) ||
@@ -855,14 +1075,18 @@ function processQR(text) {
         packetId < 0 ||
         packetId >= incomingTotal
     ) {
+
         return;
     }
+
 
     if (
         incomingTotal <= 0
     ) {
+
         return;
     }
+
 
     if (
         activeTransferId === null
@@ -876,27 +1100,35 @@ function processQR(text) {
         );
     }
 
+
     if (
         incomingTransferId !==
         activeTransferId
     ) {
+
         return;
     }
+
 
     if (
         incomingTotal !==
         totalPackets
     ) {
+
         return;
     }
+
 
     if (
         packets.has(packetId)
     ) {
+
         return;
     }
 
+
     let bytes;
+
 
     try {
 
@@ -911,33 +1143,43 @@ function processQR(text) {
         return;
     }
 
+
     if (
         bytes.length !==
         payloadSize
     ) {
+
         return;
     }
+
 
     const calculated =
         crc32(bytes);
 
+
     if (
-        calculated !== checksum
+        calculated !==
+        checksum
     ) {
+
         return;
     }
+
 
     packets.set(
         packetId,
         bytes
     );
 
+
     packetChecksums.set(
         packetId,
         checksum
     );
 
+
     updateProgress();
+
 
     if (
         packets.size ===
@@ -949,6 +1191,8 @@ function processQR(text) {
 }
 
 
+/* BEGIN TRANSFER */
+
 function beginTransfer(
     id,
     total,
@@ -956,51 +1200,72 @@ function beginTransfer(
     name
 ) {
 
-    activeTransferId = id;
+    activeTransferId =
+        id;
 
-    totalPackets = total;
+    totalPackets =
+        total;
 
-    expectedFileSize = size;
+    expectedFileSize =
+        size;
 
-    expectedFileName = name;
+    expectedFileName =
+        name;
 
-    packets = new Map();
 
-    packetChecksums = new Map();
+    packets =
+        new Map();
 
-    fileReady = false;
+
+    packetChecksums =
+        new Map();
+
+
+    fileReady =
+        false;
+
 
     fileNameElement.textContent =
         name;
 
+
     totalCountElement.textContent =
         total.toLocaleString();
+
 
     transferIdElement.textContent =
         id;
 
+
     fileSizeElement.textContent =
         formatBytes(size);
+
 
     downloadButton.disabled =
         true;
 
+
     status.className =
         "status";
+
 
     status.textContent =
         "Receiving transfer " +
         id +
         "...";
 
+
     updateProgress();
 }
 
+
+/* UPDATE PROGRESS */
 
 function updateProgress() {
 
     const received =
         packets.size;
+
 
     const percentage =
         totalPackets > 0
@@ -1010,6 +1275,7 @@ function updateProgress() {
             ) * 100
             : 0;
 
+
     const missing =
         Math.max(
             0,
@@ -1017,25 +1283,31 @@ function updateProgress() {
             received
         );
 
+
     receivedCountElement.textContent =
         received.toLocaleString();
+
 
     missingCountElement.textContent =
         missing.toLocaleString();
 
+
     progressBar.style.width =
         percentage + "%";
+
 
     progressText.textContent =
         Math.floor(
             percentage
         ) + "%";
 
+
     if (
         totalPackets > 0
     ) {
 
         const missingIds = [];
+
 
         for (
             let i = 0;
@@ -1051,16 +1323,20 @@ function updateProgress() {
             }
         }
 
+
         missingPacketsElement.value =
             compressRanges(
                 missingIds
             );
+
 
         copyMissingButton.disabled =
             missingIds.length === 0;
     }
 }
 
+
+/* COMPLETE */
 
 function completeTransfer() {
 
@@ -1073,32 +1349,43 @@ function completeTransfer() {
         if (
             !packets.has(i)
         ) {
+
             return;
         }
     }
 
-    fileReady = true;
+
+    fileReady =
+        true;
+
 
     progressBar.style.width =
         "100%";
 
+
     progressText.textContent =
         "100%";
+
 
     missingCountElement.textContent =
         "0";
 
+
     missingPacketsElement.value =
         "";
+
 
     copyMissingButton.disabled =
         true;
 
+
     downloadButton.disabled =
         false;
 
+
     status.className =
         "status success";
+
 
     status.textContent =
         "Transfer complete.\n\n" +
@@ -1108,6 +1395,8 @@ function completeTransfer() {
         "The file is ready to download.";
 }
 
+
+/* DOWNLOAD */
 
 downloadButton.addEventListener(
     "click",
@@ -1121,7 +1410,9 @@ function downloadFile() {
         return;
     }
 
+
     const ordered = [];
+
 
     for (
         let i = 0;
@@ -1134,6 +1425,7 @@ function downloadFile() {
         );
     }
 
+
     const blob =
         new Blob(
             ordered,
@@ -1143,29 +1435,38 @@ function downloadFile() {
             }
         );
 
+
     const url =
         URL.createObjectURL(
             blob
         );
+
 
     const link =
         document.createElement(
             "a"
         );
 
-    link.href = url;
+
+    link.href =
+        url;
+
 
     link.download =
         expectedFileName ||
         "received-file";
 
+
     document.body.appendChild(
         link
     );
 
+
     link.click();
 
+
     link.remove();
+
 
     setTimeout(
         function() {
@@ -1180,6 +1481,8 @@ function downloadFile() {
 }
 
 
+/* COPY MISSING IDS */
+
 copyMissingButton.addEventListener(
     "click",
     async function() {
@@ -1187,15 +1490,18 @@ copyMissingButton.addEventListener(
         const value =
             missingPacketsElement.value;
 
+
         if (!value) {
             return;
         }
+
 
         try {
 
             await navigator.clipboard.writeText(
                 value
             );
+
 
             status.textContent =
                 "Missing packet IDs copied.";
@@ -1211,15 +1517,19 @@ copyMissingButton.addEventListener(
 );
 
 
+/* BASE64 */
+
 function base64ToBytes(base64) {
 
     const binary =
         atob(base64);
 
+
     const bytes =
         new Uint8Array(
             binary.length
         );
+
 
     for (
         let i = 0;
@@ -1231,14 +1541,18 @@ function base64ToBytes(base64) {
             binary.charCodeAt(i);
     }
 
+
     return bytes;
 }
 
+
+/* CRC32 */
 
 function crc32(bytes) {
 
     let crc =
         0xFFFFFFFF;
+
 
     for (
         let i = 0;
@@ -1249,6 +1563,7 @@ function crc32(bytes) {
         crc ^=
             bytes[i];
 
+
         for (
             let j = 0;
             j < 8;
@@ -1257,6 +1572,7 @@ function crc32(bytes) {
 
             const mask =
                 -(crc & 1);
+
 
             crc =
                 (
@@ -1269,6 +1585,7 @@ function crc32(bytes) {
         }
     }
 
+
     return (
         (
             crc ^
@@ -1277,25 +1594,34 @@ function crc32(bytes) {
     )
         .toString(16)
         .toUpperCase()
-        .padStart(8, "0");
+        .padStart(
+            8,
+            "0"
+        );
 }
 
+
+/* COMPRESS MISSING IDS */
 
 function compressRanges(ids) {
 
     if (
         ids.length === 0
     ) {
+
         return "";
     }
 
+
     const ranges = [];
+
 
     let start =
         ids[0];
 
     let previous =
         ids[0];
+
 
     for (
         let i = 1;
@@ -1305,6 +1631,7 @@ function compressRanges(ids) {
 
         const current =
             ids[i];
+
 
         if (
             current ===
@@ -1317,8 +1644,10 @@ function compressRanges(ids) {
             continue;
         }
 
+
         if (
-            start === previous
+            start ===
+            previous
         ) {
 
             ranges.push(
@@ -1335,6 +1664,7 @@ function compressRanges(ids) {
             );
         }
 
+
         start =
             current;
 
@@ -1342,8 +1672,10 @@ function compressRanges(ids) {
             current;
     }
 
+
     if (
-        start === previous
+        start ===
+        previous
     ) {
 
         ranges.push(
@@ -1360,9 +1692,12 @@ function compressRanges(ids) {
         );
     }
 
+
     return ranges.join(",");
 }
 
+
+/* FILE SIZE */
 
 function formatBytes(bytes) {
 
@@ -1376,6 +1711,7 @@ function formatBytes(bytes) {
         );
     }
 
+
     if (
         bytes <
         1024 * 1024
@@ -1386,6 +1722,7 @@ function formatBytes(bytes) {
         ).toFixed(1) +
         " KB";
     }
+
 
     if (
         bytes <
@@ -1402,6 +1739,7 @@ function formatBytes(bytes) {
         " MB";
     }
 
+
     return (
         bytes /
         1024 /
@@ -1416,4 +1754,5 @@ function formatBytes(bytes) {
 <script src="./jsQR.js"></script>
 
 </body>
+
 </html>
